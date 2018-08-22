@@ -12,17 +12,17 @@ variable "project_name" { default = "kcmo-social-mastodon"}
 
 variable "digitalocean_region" { default = "nyc3" }
 
-# The number of master nodes to create in the docker swarm, master
+# The number of manager nodes to create in the docker swarm, manager
 # nodes will be assigned work
-variable "swarm_master_count" { default = 1 }
-# The size of the master node, to fetch a list see
+variable "swarm_manager_count" { default = 1 }
+# The size of the manager node, to fetch a list see
 # https://developers.digitalocean.com/documentation/v2/#list-all-sizes
 # specify the size by using the id or the slug
-variable "swarm_master_size" { default = "s-1vcpu-2gb" }
+variable "swarm_manager_size" { default = "s-1vcpu-2gb" }
 # an array with ssh key IDs, these will be unique to your account.  You should set them
 # in secrets.auto.tfvars
 # See https://developers.digitalocean.com/documentation/v2/#list-all-keys
-variable "swarm_master_ssh_key_ids" { type = "list" }
+variable "swarm_manager_ssh_key_ids" { type = "list" }
 
 # The number of worker nodes to create in the docker swarm
 variable "swarm_worker_count" { default = 1 }

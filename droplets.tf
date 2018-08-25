@@ -1,25 +1,25 @@
-resource "digitalocean_droplet" "swarm-manager" {
-  count  = "${var.swarm_manager_count}" 
-  # See https://developers.digitalocean.com/documentation/v2/#list-all-application-images for a list
-  image  = "docker-16-04"
-  monitoring = true
-  name   = "${var.project_name}-manager-${count.index}"
-  private_networking = true
-  region = "${var.digitalocean_region}"
-  size   = "${var.swarm_manager_size}"
-  ssh_keys = "${var.swarm_manager_ssh_key_ids}"
-  tags   = ["${digitalocean_tag.project_name.id}"]
+
+# See https://registry.terraform.io/modules/thojkooi/docker-swarm-mode/digitalocean/0.2.0
+module "swarm-cluster" {
+  source            = "thojkooi/docker-swarm-mode/digitalocean"
+  version           = "0.2.0"
+
+  total_managers    = "${var.swarm_manager_count}" 
+  total_workers     = "${var.swarm_worker_count}" 
+  domain            = "${var.domain_name}"
+  provision_ssh_key = "${var.provision_ssh_key}"
+  provision_user    = "root"
+  region            = "${var.digitalocean_region}"
   
-  connection {
-    type = "ssh"
-    user = "root"
-    private_key = "${file("~/.ssh/id_rsa")}"
-  }
+  manager_ssh_keys  = "${var.ssh_key_ids}"
+  manager_image     = "docker-16-04"
+  manager_size      = "${var.swarm_manager_size}"
+  manager_user_data = "${file("provisioning/node_setup.sh")}"
+  manager_tags      = ["${digitalocean_tag.project_name.id}", "${digitalocean_tag.manager.id}"]
   
-  provisioner "remote-exec" {
-    
-    inline = [
-      "curl -sSL https://agent.digitalocean.com/install.sh | sh"
-    ]
-  }
+  worker_ssh_keys   = "${var.ssh_key_ids}"
+  worker_image      = "docker-16-04"
+  worker_size       = "${var.swarm_worker_size}"
+  worker_user_data  = "${file("provisioning/node_setup.sh")}"
+  worker_tags       = ["${digitalocean_tag.project_name.id}", "${digitalocean_tag.worker.id}"]
 }

@@ -1,4 +1,6 @@
+# These should be set in secrets.auto.tfvars
 variable "do_token" {}
+variable "do_droplan_token" {}
 variable "aws_access_key" { default = "" }
 variable "aws_secret_key" { default = "" }
 variable "aws_region" {

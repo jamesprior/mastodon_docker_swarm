@@ -1,14 +1,19 @@
 #!/bin/sh
 
-# WARNING changing this file will make terraform try to destroy and re-create your assets.
+NODE_TYPE=$1 # Either 'manager' or 'worker'
+NODE_NUMBER=$2 # zero indexed
 
-# Docker swarm networking
-ufw allow 2377
-ufw allow 7946
-ufw allow 7946/udp
-ufw allow 4789/udp
 
+if [[ "$NODE_NUMBER" == "0" && "$NODE_TYPE" == "manager" ]]
+then
+  docker node update --label-add app_host=postgres manager-01
+  docker node update --label-add app_host=redis manager-02
+  docker node update --label-add app_host=traefik manager-02
+fi
+
+########################################################################
 # Mastodon user account and setup
+########################################################################
 adduser --disabled-password --gecos "" mastodon
 usermod -aG sudo mastodon
 usermod -a -G docker mastodon
@@ -19,7 +24,9 @@ chown mastodon:mastodon /home/mastodon/.ssh
 cp /root/.ssh/authorized_keys /home/mastodon/.ssh/authorized_keys
 chown mastodon:mastodon /home/mastodon/.ssh/authorized_keys
 
+########################################################################
 # Droplan setup for more private private networking
+########################################################################
 apt-get install -yy netfilter-persistent
 mkdir -p /opt/droplan
 curl -O -L https://github.com/tam7t/droplan/releases/download/v1.3.1/droplan_1.3.1_linux_amd64.tar.gz
@@ -36,3 +43,25 @@ EOF
 chmod +x /opt/droplan/refresh.sh
 echo '*/5 * * * * root PATH=/sbin:/usr/bin:/bin DO_KEY=${do_droplan_token} DO_TAG=${do_tag} /opt/droplan/refresh.sh > /var/log/droplan.log 2>&1' > /etc/cron.d/droplan
 
+########################################################################
+# Redis setup
+########################################################################
+echo 'vm.overcommit_memory = 1' >> /etc/sysctl.conf
+sysctl vm.overcommit_memory=1
+
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+cat <<EOF > /etc/rc.local
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+exit 0
+EOF

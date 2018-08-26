@@ -31,6 +31,8 @@ variable "provision_ssh_key" {
 # nodes will be assigned work
 variable "swarm_manager_count" { 
   default = 3 # so we can tolerate the failure of any one node and still do work
+  # don't decrease this.  If you want to add capacity add workers.  Beware that
+  # postgresql is assigned to manager-01 and redis is assigned to manager-02
 } 
 # The size of the manager node, to fetch a list see
 # https://developers.digitalocean.com/documentation/v2/#list-all-sizes

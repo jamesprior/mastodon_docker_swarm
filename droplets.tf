@@ -1,4 +1,4 @@
-data "template_file" "node_provisioner" {
+data "template_file" "node_setup" {
   template = "${file("templates/node_setup.sh.tpl")}"
 
   vars {
@@ -22,12 +22,47 @@ module "swarm-cluster" {
   manager_ssh_keys  = "${var.ssh_key_ids}"
   manager_image     = "docker-16-04"
   manager_size      = "${var.swarm_manager_size}"
-  manager_user_data = "${data.template_file.node_provisioner.rendered}"
+  manager_user_data = "${file("provisioning/swarm_user_data.sh")}"
   manager_tags      = ["${digitalocean_tag.project_name.id}", "${digitalocean_tag.manager.id}"]
   
   worker_ssh_keys   = "${var.ssh_key_ids}"
   worker_image      = "docker-16-04"
   worker_size       = "${var.swarm_worker_size}"
-  worker_user_data  = "${data.template_file.node_provisioner.rendered}"
+  worker_user_data  = "${file("provisioning/swarm_user_data.sh")}"
   worker_tags       = ["${digitalocean_tag.project_name.id}", "${digitalocean_tag.worker.id}"]
 }
+
+
+# Setup some user accounts, firewall access for swarm, and droplan for private networking
+# Tags the first manager node for postgres
+# Tags the second manager node for redis
+resource "null_resource" "manager_provisioner" {
+  depends_on = ["module.swarm-cluster"]
+  count      = "${var.swarm_manager_count}"
+  
+  triggers {
+     manager_ips = "${ module.swarm-cluster.manager_ips[count.index] }"
+  }
+  
+  connection {
+    host        = "${module.swarm-cluster.manager_ips[count.index]}"
+    type        = "ssh"
+    user        = "mastodon"
+    private_key = "${file("${var.provision_ssh_key}")}"
+  }
+
+  provisioner "file" {
+    content     = "${data.template_file.node_setup.rendered}"
+    destination = "/tmp/node_setup.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/node_setup.sh",
+      "/tmp/node_setup.sh manager ${count.index}",
+      "rm /tmp/node_setup.sh",
+    ]
+  }
+}
+
+# There's no worker provisioner because I haven't added any workers yet.

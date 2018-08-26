@@ -8,6 +8,9 @@ variable "aws_region" {
 }
 variable "aws_profile" { }
 
+# This should be your current IP address, used to lock down SSH access
+variable "allowed_ssh_ips" { default = ["136.33.32.150"] }
+
 # The name of the mastodon project, this will be used for tagging resources and in
 # droplet names
 variable "project_name" { default = "kcmo-social-mastodon"}

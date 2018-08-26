@@ -47,7 +47,7 @@ resource "null_resource" "manager_provisioner" {
   connection {
     host        = "${module.swarm-cluster.manager_ips[count.index]}"
     type        = "ssh"
-    user        = "mastodon"
+    user        = "root"
     private_key = "${file("${var.provision_ssh_key}")}"
   }
 
@@ -65,4 +65,31 @@ resource "null_resource" "manager_provisioner" {
   }
 }
 
-# There's no worker provisioner because I haven't added any workers yet.
+resource "null_resource" "worker_provisioner" {
+  depends_on = ["module.swarm-cluster"]
+  count      = "${var.swarm_worker_count}"
+  
+  triggers {
+     worker_ips = "${ module.swarm-cluster.worker_ips[count.index] }"
+  }
+  
+  connection {
+    host        = "${module.swarm-cluster.worker_ips[count.index]}"
+    type        = "ssh"
+    user        = "root"
+    private_key = "${file("${var.provision_ssh_key}")}"
+  }
+
+  provisioner "file" {
+    content     = "${data.template_file.node_setup.rendered}"
+    destination = "/tmp/node_setup.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/node_setup.sh",
+      "/tmp/node_setup.sh worker ${count.index}",
+      "rm /tmp/node_setup.sh",
+    ]
+  }
+}

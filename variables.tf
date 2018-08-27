@@ -40,7 +40,7 @@ variable "swarm_manager_count" {
 # The size of the manager node, to fetch a list see
 # https://developers.digitalocean.com/documentation/v2/#list-all-sizes
 # specify the size by using the id or the slug
-variable "swarm_manager_size" { default = "s-1vcpu-1gb" }
+variable "swarm_manager_size" { default = "s-1vcpu-2gb" }
 
 # The number of worker nodes to create in the docker swarm
 variable "swarm_worker_count" { default = 0 }

@@ -27,11 +27,12 @@ resource "digitalocean_record" "worker_records" {
 }
 
 resource "digitalocean_record" "domain_round_robin" {
-  count  = "${length(local.all_swarm_ips)}"
+  depends_on = ["module.swarm-cluster"]
+  count  = "${var.swarm_manager_count + var.swarm_worker_count}"
   
   domain = "${digitalocean_domain.mastodon_domain.name}"
   type   = "A"
-  name   = "${var.domain_name}"
+  name   = "@"
   value  = "${local.all_swarm_ips[count.index]}"
 }
 

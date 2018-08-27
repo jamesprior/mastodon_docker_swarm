@@ -41,7 +41,7 @@ resource "null_resource" "manager_provisioner" {
   count      = "${var.swarm_manager_count}"
   
   triggers {
-     manager_ips = "${ module.swarm-cluster.manager_ips[count.index] }"
+     manager_ips = "${module.swarm-cluster.manager_ips[count.index] }"
   }
   
   connection {

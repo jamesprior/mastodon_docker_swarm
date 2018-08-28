@@ -59,7 +59,7 @@ resource "null_resource" "manager_provisioner" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/node_setup.sh",
-      "/tmp/node_setup.sh manager ${count.index}",
+      "/tmp/node_setup.sh",
       "rm /tmp/node_setup.sh",
     ]
   }
@@ -88,7 +88,7 @@ resource "null_resource" "worker_provisioner" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/node_setup.sh",
-      "/tmp/node_setup.sh worker ${count.index}",
+      "/tmp/node_setup.sh",
       "rm /tmp/node_setup.sh",
     ]
   }

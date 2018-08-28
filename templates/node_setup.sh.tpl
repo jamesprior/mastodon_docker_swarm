@@ -1,26 +1,5 @@
 #!/bin/sh
 
-NODE_TYPE=$1 # Either 'manager' or 'worker'
-NODE_NUMBER=$2 # zero indexed
-
-# On the third manager create a volume and start the portainer manager
-if [[ "$NODE_NUMBER" == "2" && "$NODE_TYPE" == "manager" ]]
-then
-  # Portainer for helpful management, run only on one node, no auth, requires
-  # an ssh tunnel to access
-  docker volume create portainer_data
-  docker service create \
-    --name portainer \
-    --publish 9000:9000 \
-    --replicas=1 \
-    --constraint 'node.hostname == manager-03' \
-    --mount type=bind,src=//var/run/docker.sock,dst=/var/run/docker.sock \
-    --mount type=volume,src=portainer_data,dst=/data \
-    portainer/portainer \
-    --no-auth \
-    -H unix:///var/run/docker.sock
-fi
-
 ########################################################################
 # Mastodon user account and setup
 ########################################################################

@@ -7,6 +7,9 @@ variable "aws_region" {
   default = "us-east-2"
 }
 variable "aws_profile" { }
+variable "vapid_public_key" { }
+variable "vapid_private_key" { }
+
 
 # This should be your current IP address, used to lock down SSH access
 variable "allowed_ssh_ips" { default = ["136.33.32.150"] }
@@ -29,6 +32,15 @@ variable "provision_ssh_key" {
   default     = "~/.ssh/id_rsa"
   description = "File path to SSH private key used to access the provisioned nodes. Ensure this key is listed in the manager and work ssh keys list"
 }
+
+# Your email address used for Lets Encrypt
+variable "acme_email" { default = "foo@bar.com" }
+# Use the staging server for Lets Encrypt or the production server?
+# For staging:
+variable "acme_caserver" { default = "https://acme-staging-v02.api.letsencrypt.org/directory" }
+# For production
+# variable "acme_caserver" { default = "https://acme-v02.api.letsencrypt.org/directory" }
+
 
 # The number of manager nodes to create in the docker swarm, manager
 # nodes will be assigned work

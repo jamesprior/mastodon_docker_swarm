@@ -40,5 +40,5 @@ resource "digitalocean_record" "www_cname" {
   domain = "${digitalocean_domain.mastodon_domain.name}"
   type   = "CNAME"
   name   = "www"
-  value  = "@"
+  value  = "kcmo.social."
 }

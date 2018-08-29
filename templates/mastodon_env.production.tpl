@@ -67,11 +67,11 @@ VAPID_PUBLIC_KEY=${vapid_public_key}
 # If you want to use an SMTP server without authentication (e.g local Postfix relay)
 # then set SMTP_AUTH_METHOD and SMTP_OPENSSL_VERIFY_MODE to 'none' and
 # *comment* SMTP_LOGIN and SMTP_PASSWORD (leaving them blank is not enough).
-SMTP_SERVER=smtp.mailgun.org
-SMTP_PORT=587
-SMTP_LOGIN=
-SMTP_PASSWORD=
-SMTP_FROM_ADDRESS=notifications@example.com
+SMTP_SERVER=${smtp_server}
+SMTP_PORT=${smtp_port}
+SMTP_LOGIN=${smtp_login}
+SMTP_PASSWORD=${smtp_password}
+SMTP_FROM_ADDRESS=$smtp_from_address}
 #SMTP_DOMAIN= # defaults to LOCAL_DOMAIN
 #SMTP_DELIVERY_METHOD=smtp # delivery method can also be sendmail
 #SMTP_AUTH_METHOD=plain

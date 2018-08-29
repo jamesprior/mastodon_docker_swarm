@@ -47,6 +47,11 @@ data "template_file" "mastodon_env" {
     domain_name       = "${var.domain_name}"
     secret_key_base   = "${random_id.secret_key_base.hex}"
     otp_secret        = "${random_id.otp_secret.hex}"
+    smtp_from_address  = "${var.smtp_from_address}"
+    smtp_login         = "${var.smtp_login}"
+    smtp_password      = "${var.smtp_password}"
+    smtp_server        = "${var.smtp_server}"
+    smtp_port          = "${var.smtp_port}"
     vapid_private_key = "${var.vapid_private_key}"
     vapid_public_key  = "${var.vapid_public_key}"
   }

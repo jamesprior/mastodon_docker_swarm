@@ -9,6 +9,8 @@ variable "aws_region" {
 variable "aws_profile" { }
 variable "vapid_public_key" { }
 variable "vapid_private_key" { }
+variable "smtp_login" { }
+variable "smtp_password" { }
 
 
 # This should be your current IP address, used to lock down SSH access
@@ -37,6 +39,12 @@ variable "provision_ssh_key" {
 variable "acme_email" { default = "foo@bar.com" }
 # Set this to "true" to use the staging ca server and turn on debugging in traefic
 variable "traefik_debug" { default = "true" }
+
+
+variable "smtp_server" { default = "email-smtp.us-east-1.amazonaws.com" }
+variable "smtp_port" { default="587" }
+variable "smtp_from_address" { default = "noreply@kcmo.social" }
+
 
 
 # The number of manager nodes to create in the docker swarm, manager

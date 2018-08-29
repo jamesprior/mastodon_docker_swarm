@@ -35,11 +35,8 @@ variable "provision_ssh_key" {
 
 # Your email address used for Lets Encrypt
 variable "acme_email" { default = "foo@bar.com" }
-# Use the staging server for Lets Encrypt or the production server?
-# For staging:
-variable "acme_caserver" { default = "https://acme-staging-v02.api.letsencrypt.org/directory" }
-# For production
-# variable "acme_caserver" { default = "https://acme-v02.api.letsencrypt.org/directory" }
+# Set this to "true" to use the staging ca server and turn on debugging in traefic
+variable "traefik_debug" { default = "true" }
 
 
 # The number of manager nodes to create in the docker swarm, manager

@@ -1,5 +1,13 @@
 # Deploys the stacks to the cluster once it is provisioned
 
+locals {
+  acme_prod_caserver = "https://acme-v02.api.letsencrypt.org/directory"
+  acme_staging_caserver = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  acme_caserver = "${(var.traefik_debug == "true" ? local.acme_staging_caserver : local.acme_prod_caserver)}"
+  traefik_debug_flag = "${(var.traefik_debug == "true" ? "--debug" : "")}"
+}
+
+
 resource "random_string" "redis_pw" {
   length = 16
   special = false
@@ -22,10 +30,11 @@ data "template_file" "mastodon_yml" {
   template = "${file("templates/mastodon.yml.tpl")}"
 
   vars {
-    acme_email    = "${var.acme_email}"
-    acme_caserver = "${var.acme_caserver}"
-    domain_name   = "${var.domain_name}"
-    redis_pw      = "${random_string.redis_pw.result}"
+    acme_email         = "${var.acme_email}"
+    acme_caserver      = "${local.acme_caserver}"
+    domain_name        = "${var.domain_name}"
+    redis_pw           = "${random_string.redis_pw.result}"
+    traefik_debug_flag = "${local.traefik_debug_flag}"
   }
 }
 
@@ -45,6 +54,12 @@ data "template_file" "mastodon_env" {
 
 resource "null_resource" "deploy_stack" {
   depends_on = ["module.swarm-cluster"]
+  
+  triggers = {
+    mastodon_yml_sha1  = "${sha1(file("templates/mastodon.yml.tpl"))}"
+    mastodon_env_sha1  = "${sha1(file("templates/mastodon_env.production.tpl"))}"
+    portainer_yml_sha1 = "${sha1(file("provisioning/portainer.yml"))}"
+  }
   
   connection {
     host        = "${module.swarm-cluster.manager_ips[0]}"

@@ -14,8 +14,9 @@ cp /root/.ssh/authorized_keys /home/mastodon/.ssh/authorized_keys
 chown mastodon:mastodon /home/mastodon/.ssh/authorized_keys
 
 ########################################################################
-# Droplan setup for more private private networking
+# Digital ocean specific setup - monitoring and droplan
 ########################################################################
+curl -sSL https://agent.digitalocean.com/install.sh | sh
 apt-get install -yy netfilter-persistent
 mkdir -p /opt/droplan
 curl -O -L https://github.com/tam7t/droplan/releases/download/v1.3.1/droplan_1.3.1_linux_amd64.tar.gz

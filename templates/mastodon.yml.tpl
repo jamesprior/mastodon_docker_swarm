@@ -1,5 +1,5 @@
 # On a manager run : docker stack deploy --compose-file=mastodon.yml mastodon
-version: '3'
+version: '3.5'
 services:
   db:
     image: postgres:10.5-alpine
@@ -76,7 +76,7 @@ services:
         "--acme.onhostrule=true",
         "--acme.storage=/etc/traefik/acme/acme.json",
         "--api",
-        "--debug",
+        "${traefik_debug_flag}",
         "--defaultentrypoints=http,https",
         "--entryPoints=Name:http Address::80 Redirect.EntryPoint:https",
         "--entryPoints=Name:https Address::443 TLS",
@@ -107,6 +107,8 @@ services:
       - redis
     volumes:
       - public-system:/mastodon/public/system
+      - public-assets:/mastodon/public/assets
+      - public-packs:/mastodon/public/packs
     networks:
       - traefik-net
       - internal-net
@@ -126,6 +128,19 @@ services:
       placement:
         constraints:
           - node.labels.db != true
+  web_assets:
+    image: tootsuite/mastodon:v2.4.4
+    env_file: mastodon_env.production
+    command: rails assets:precompile
+    volumes:
+      - public-assets:/mastodon/public/assets
+      - public-packs:/mastodon/public/packs
+    networks: # otherwise it will create a default network
+      - traefik-net
+    deploy:
+      mode: global
+      restart_policy:
+        condition: none
   streaming:
     image: tootsuite/mastodon:v2.4.4
     env_file: mastodon_env.production
@@ -178,13 +193,18 @@ services:
       placement:
         constraints:
           - node.labels.db != true
+
 networks:
   internal-net:
     internal: true
+    driver: overlay
+    attachable: true
   traefik-net:
 
 volumes:
   postgres:
   redis:
   public-system:
+  public-assets:
+  public-packs:  
   acme-storage:

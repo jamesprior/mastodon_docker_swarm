@@ -36,6 +36,51 @@ Once the terraform has run successfully it will output the first manager node, f
 
 Start an SSH tunnel to the node with:
 
-ssh -N -L 9000:manager-01.nyc1.kcmo.social:9000 -L 8080:manager-01.nyc1.kcmo.social:8080 mastodon@manager-01.nyc1.kcmo.social
+    ssh -N -L 9000:manager-02.nyc1.kcmo.social:9000 -L 8080:manager-02.nyc1.kcmo.social:8080 mastodon@manager-01.nyc1.kcmo.social
 
 Then visit http://localhost:9000/#/home for docker swarm management.  Visit http://localhost:8080 for external HTTP traffic monitoring
+
+To run rake commands ssh to manager-02 and invoke the command with:
+
+    docker run --rm \
+    --net mastodon_internal-net \
+    --env-file mastodon_env.production \
+    -e RAILS_ENV=production \
+    tootsuite/mastodon:v2.4.4 \
+    COMMAND_TO_RUN_HERE
+    
+    
+For example, to make alice an admin ( See https://github.com/tootsuite/documentation/blob/master/Running-Mastodon/Administration-guide.md for more info)
+
+    docker run --rm \
+    --net mastodon_internal-net \
+    --env-file mastodon_env.production \
+    -e RAILS_ENV=production \
+    -e USERNAME=alice \
+    tootsuite/mastodon:v2.4.4 \
+    rails mastodon:make_admin
+
+
+# First time startup
+The first time you start a swarm (or update the image) it will compile the assets into a volume on each host.  This process takes a while and the mastodon web apps must be restarted when it is complete. When it's done you need to restart the web services.
+
+How do you know it is complete?  Well, you can just wait ten minutes and it should be pretty safe.  Or ssh to a server and run `docker service ls` and look for `mastodon_web_assets` to say 0/0 replicas.  Or use the portainer interface to see when they've completed.
+
+While you wait for the assets to compile you can setup the database too.  SSH to a manager and run:
+
+    docker run --rm \
+    --net mastodon_internal-net \
+    --env-file mastodon_env.production \
+    -e RAILS_ENV=production \
+    -e SAFETY_ASSURED=1 \
+    tootsuite/mastodon:v2.4.4 \
+    rails db:setup
+
+Once asset compliation has completed restart the web services.  You can use portainer or run
+
+    docker service scale mastodon_web=0
+    docker service scale mastodon_web=2
+    
+to force a restart
+    
+

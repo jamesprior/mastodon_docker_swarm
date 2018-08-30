@@ -1,6 +1,5 @@
 For creating a mastodon instance on digital ocean using docker swarm
-
-Setup:
+## Setup
 
 On the machine running terraform
 
@@ -10,15 +9,17 @@ brew install jq # or don't use brew, whatevs, just get jq installed
 
 cp secrets.auto.tfvars.example  secrets.auto.tfvars
 
-Fill in your digital ocean token and an aws profile or key and secret.  Keep in mind that these are 'secret' as in they won't be checked into source control, but they may be visible in the terraform state files.
+Fill the missing secrets in your new file.  Keep in mind that these are 'secret' as in they won't be checked into source control, but they may be visible in the terraform state files.
 
-Take a moment to review variables.tf and update any that don't fit your needs
+To generate a set of keys for vapid to enable web push run the `generate_vapid_keys.rb` 
+
+Take a moment to review variables.tf and update any that don't fit your needs.  While you're at it, take a look at mastodon_env.prodction.tpl and make sure the mastodon settings are to your taste.
 
 Review backend.tf and update the terraform state.
 
 run terraform init
 
-## About this setup
+## About the result
 
 This is designed to be an easily scalable setup, it is not designed to be a wholly fault tolerant automatic scaling setup.  Postgres, Redis, and Traefik all run a single container on a single labeled instance to avoid having to share data.  If one of those instances goes down you'll still need to restore the data.
 
@@ -62,6 +63,11 @@ For example, to make alice an admin ( See https://github.com/tootsuite/documenta
 
 
 # First time startup
+
+When starting up a cluster for the first time the scripts should install some helpful software for monitoring and security and then try to join the swarm.  If a step fails, it is safe to re-run `terraform apply` until it completes.
+
+If you did receive any errors, once it is complete you should ssh to a manager node and check to see that the swarm is listing the expected number of active serviers.  Run `docker node ls` to see what is in the cluster and `docker node rm NODE_ID` to remove any managers listed as down.  You may also need to re-apply the labels from the `deploy_stack` provisioner in main.tf
+
 The first time you start a swarm (or update the image) it will compile the assets into a volume on each host.  This process takes a while and the mastodon web apps must be restarted when it is complete. When it's done you need to restart the web services.
 
 How do you know it is complete?  Well, you can just wait ten minutes and it should be pretty safe.  Or ssh to a server and run `docker service ls` and look for `mastodon_web_assets` to say 0/0 replicas.  Or use the portainer interface to see when they've completed.

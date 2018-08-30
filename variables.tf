@@ -36,15 +36,13 @@ variable "provision_ssh_key" {
 }
 
 # Your email address used for Lets Encrypt
-variable "acme_email" { default = "foo@bar.com" }
+variable "acme_email" { default = "acme@kcmo.social" }
 # Set this to "true" to use the staging ca server and turn on debugging in traefic
 variable "traefik_debug" { default = "true" }
 
-
 variable "smtp_server" { default = "email-smtp.us-east-1.amazonaws.com" }
 variable "smtp_port" { default="587" }
-variable "smtp_from_address" { default = "noreply@kcmo.social" }
-
+variable "smtp_from_address" { default = "notifications@kcmo.social" }
 
 
 # The number of manager nodes to create in the docker swarm, manager

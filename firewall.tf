@@ -96,6 +96,12 @@ resource "digitalocean_firewall" "swarm-external-fw" {
       port_range              = "123"
       destination_addresses   = ["0.0.0.0/0", "::/0"]
     },
+    # SMTP
+    {
+      protocol                = "tcp"
+      port_range              = "${var.smtp_port}"
+      destination_addresses   = ["0.0.0.0/0", "::/0"]
+    },
   ]
   
   inbound_rule = [

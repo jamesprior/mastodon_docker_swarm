@@ -61,7 +61,7 @@ services:
       # use a named-volume for certs persistency
       - acme-storage:/etc/traefik/acme 
     networks:
-      - traefik-net
+      - external-net
       - internal-net
     command: [
         "traefik", 
@@ -110,7 +110,7 @@ services:
       - public-assets:/mastodon/public/assets
       - public-packs:/mastodon/public/packs
     networks:
-      - traefik-net
+      - external-net
       - internal-net
     deploy:
       mode: replicated
@@ -123,12 +123,12 @@ services:
       labels:
         - "traefik.backend=web"
         - "traefik.port=3000"
-        - "traefik.docker.network=mastodon_traefik-net"
+        - "traefik.docker.network=mastodon_external-net"
         - "traefik.frontend.rule=Host:${domain_name}"
       placement:
         constraints:
           - node.labels.db != true
-  web_assets:
+  precompile_assets:
     image: tootsuite/mastodon:v2.4.4
     env_file: mastodon_env.production
     command: rails assets:precompile
@@ -136,7 +136,7 @@ services:
       - public-assets:/mastodon/public/assets
       - public-packs:/mastodon/public/packs
     networks: # otherwise it will create a default network
-      - traefik-net
+      - external-net
     deploy:
       mode: global
       restart_policy:
@@ -152,7 +152,7 @@ services:
       - redis
     networks:
       - internal-net
-      - traefik-net
+      - external-net
     deploy:
       mode: replicated
       replicas: 2
@@ -163,7 +163,7 @@ services:
         window: 20s
       labels:
         - "traefik.port=4000"
-        - "traefik.docker.network=mastodon_traefik-net"
+        - "traefik.docker.network=mastodon_external-net"
         - "traefik.backend=streaming"
         - "traefik.frontend.rule=Host:${domain_name};PathPrefixStrip:/api/v1/streaming"
       placement:
@@ -175,6 +175,7 @@ services:
     command: bundle exec sidekiq -q default -q mailers -q pull -q push
     networks:
       - internal-net
+      - external-net
     labels:
       - traefik.enable=false
     depends_on:
@@ -182,6 +183,8 @@ services:
       - redis
     volumes:
       - public-system:/mastodon/public/system
+      - public-assets:/mastodon/public/assets
+      - public-packs:/mastodon/public/packs
     deploy:
       mode: replicated
       replicas: 1
@@ -199,7 +202,7 @@ networks:
     internal: true
     driver: overlay
     attachable: true
-  traefik-net:
+  external-net:
 
 volumes:
   postgres:

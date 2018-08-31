@@ -83,7 +83,7 @@ services:
         "--docker", 
         "--docker.swarmMode", 
         "--docker.watch", 
-        "--docker.domain=${domain_name}",
+        "--docker.domain=${swarm_hostname}",
         "--retry"]
     deploy:
       mode: replicated
@@ -126,7 +126,7 @@ services:
         - "traefik.backend=web"
         - "traefik.port=3000"
         - "traefik.docker.network=mastodon_external-net"
-        - "traefik.frontend.rule=Host:${domain_name}"
+        - "traefik.frontend.rule=Host:${swarm_hostname}"
       placement:
         constraints:
           - node.labels.db != true
@@ -154,7 +154,7 @@ services:
         - "traefik.port=4000"
         - "traefik.docker.network=mastodon_external-net"
         - "traefik.backend=streaming"
-        - "traefik.frontend.rule=Host:${domain_name};PathPrefixStrip:/api/v1/streaming"
+        - "traefik.frontend.rule=Host:${swarm_hostname};PathPrefixStrip:/api/v1/streaming"
       placement:
         constraints:
           - node.labels.db != true

@@ -1,0 +1,4 @@
+locals {
+  # eg staging.kcmo.social, this is the domain name the swarm is accessible at
+  swarm_hostname = "${var.subdomain == "" ? var.domain_name : "${var.subdomain}.${var.domain_name}"}"
+}

@@ -24,6 +24,8 @@ variable "allowed_ssh_ips" { default = ["136.33.32.150"] }
 
 # The site domain
 variable "domain_name" { default = "kcmo.social"}
+# Optionally include all resources in a subdomain, eg staging
+variable "subdomain" { default = "" }
 
 # The region to deploy in
 variable "digitalocean_region" { default = "nyc1" }

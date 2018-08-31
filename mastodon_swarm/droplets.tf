@@ -31,9 +31,7 @@ module "swarm-cluster" {
 }
 
 
-# Setup some user accounts, firewall access for swarm, and droplan for private networking
-# Tags the first manager node for postgres
-# Tags the second manager node for redis
+# Using a custom image, the only thing the provisioner needs to do is to set up a cronjob
 resource "null_resource" "manager_provisioner" {
   depends_on = ["module.swarm-cluster"]
   count      = "${var.swarm_manager_count}"

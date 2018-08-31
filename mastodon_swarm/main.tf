@@ -32,7 +32,7 @@ data "template_file" "mastodon_yml" {
   vars {
     acme_email         = "${var.acme_email}"
     acme_caserver      = "${local.acme_caserver}"
-    domain_name        = "${var.domain_name}"
+    swarm_hostname     = "${local.swarm_hostname}"
     redis_pw           = "${random_string.redis_pw.result}"
     traefik_debug_flag = "${local.traefik_debug_flag}"
   }
@@ -44,7 +44,7 @@ data "template_file" "mastodon_env" {
   vars {
     redis_pw           = "${random_string.redis_pw.result}"
     postgres_pw        = "${random_string.postgres_pw.result}"
-    domain_name        = "${var.domain_name}"
+    swarm_hostname     = "${local.swarm_hostname}"
     secret_key_base    = "${random_id.secret_key_base.hex}"
     otp_secret         = "${random_id.otp_secret.hex}"
     smtp_from_address  = "${var.smtp_from_address}"

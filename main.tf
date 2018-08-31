@@ -63,14 +63,72 @@ data "template_file" "mastodon_env" {
   }
 }
 
-resource "null_resource" "deploy_stack" {
+resource "null_resource" "deploy_portainer" {
   depends_on = ["module.swarm-cluster"]
+
+  triggers = {
+    portainer_yml_sha1 = "${sha1(file("provisioning/portainer.yml"))}"
+  }
   
+  connection {
+    host        = "${module.swarm-cluster.manager_ips[0]}"
+    type        = "ssh"
+    user        = "mastodon"
+    private_key = "${file("${var.provision_ssh_key}")}"
+  }
+  
+  provisioner "file" {
+    content     = "${file("provisioning/portainer.yml")}"
+    destination = "/home/mastodon/portainer.yml"
+  }  
+
+  provisioner "remote-exec" {
+    inline = [
+      "docker stack deploy --compose-file=portainer.yml portainer",
+    ]
+  }
+}
+
+# Compile the assets in a volume on each node in the swarm.
+# Note that this will copy the environment file but the deploy
+# will not be triggered if the environment file changes.  
+resource "null_resource" "deploy_mastodon_assets" {
+  depends_on = ["module.swarm-cluster"]
+
   triggers = {
     mastodon_assets_sha1 = "${sha1(file("provisioning/mastodon_assets.yml"))}"
+  }
+  
+  connection {
+    host        = "${module.swarm-cluster.manager_ips[0]}"
+    type        = "ssh"
+    user        = "mastodon"
+    private_key = "${file("${var.provision_ssh_key}")}"
+  }
+  
+  provisioner "file" {
+    content     = "${file("provisioning/mastodon_assets.yml")}"
+    destination = "/home/mastodon/mastodon_assets.yml"
+  }
+  
+  provisioner "file" {
+    content     = "${data.template_file.mastodon_env.rendered}"
+    destination = "/home/mastodon/mastodon_env.production"
+  }
+  
+  provisioner "remote-exec" {
+    inline = [
+      "docker stack deploy --compose-file=mastodon_assets.yml mastodon_assets",
+    ]
+  }
+}
+
+resource "null_resource" "deploy_mastodon" {
+  depends_on = ["module.swarm-cluster", "null_resource.deploy_mastodon_assets"]
+  
+  triggers = {
     mastodon_yml_sha1  = "${sha1(file("templates/mastodon.yml.tpl"))}"
     mastodon_env_sha1  = "${sha1(file("templates/mastodon_env.production.tpl"))}"
-    portainer_yml_sha1 = "${sha1(file("provisioning/portainer.yml"))}"
   }
   
   connection {
@@ -93,18 +151,10 @@ resource "null_resource" "deploy_stack" {
   provisioner "file" {
     content     = "${file("provisioning/portainer.yml")}"
     destination = "/home/mastodon/portainer.yml"
-  }
-  
-  provisioner "file" {
-    content     = "${file("provisioning/mastodon_assets.yml")}"
-    destination = "/home/mastodon/mastodon_assets.yml"
-  }
-  
+  }  
 
   provisioner "remote-exec" {
     inline = [
-      "docker stack deploy --compose-file=mastodon_assets.yml mastodon_assets",
-      "docker stack deploy --compose-file=portainer.yml portainer",
       "docker node update --label-add db=true manager-01",
       "docker node update --label-add redis=true manager-02",
       "docker node update --label-add traefik=true manager-02",

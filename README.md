@@ -27,6 +27,7 @@ This is designed to be an easily scalable setup, it is not designed to be a whol
 
 Postgres and redis are constrained to run on a single labeled host.  They will create volumes for persistence.  If you want to move those sevices you must move those volumes too.
 
+
 ## Security
 
 This terraform will store sensitive information in the tfstate.  You should not check this into source control.  If you do choose to store it, make sure that it is in a secure location.  If you are storing it in S3 that means the bucket IS NOT PUBLIC, ideally encrypted at rest with access logs.
@@ -70,7 +71,7 @@ When starting up a cluster for the first time the scripts should install some he
 
 If you did receive any errors, once it is complete you should ssh to a manager node and check to see that the swarm is listing the expected number of active serviers.  Run `docker node ls` to see what is in the cluster and `docker node rm NODE_ID` to remove any managers listed as down.  You may also need to re-apply the labels from the `deploy_stack` provisioner in main.tf
 
-The first time you start a swarm (or update the image) it will compile the assets into a volume on each host.  This process takes a while and the mastodon web apps must be restarted when it is complete. When it's done you need to restart the web services.
+The first time you apply the terraform (or update the mastodon_assets.yml stack) it will compile the assets into a volume on each host.  This process takes a while and the mastodon web apps must be restarted when it is complete. When it's done you need to restart the web services and sidekiq.
 
 How do you know it is complete?  Well, you can just wait ten minutes and it should be pretty safe.  Or ssh to a server and run `docker service ls` and look for `mastodon_web_assets` to say 0/0 replicas.  Or use the portainer interface to see when they've completed.
 
@@ -96,4 +97,4 @@ to force a restart.  You can also use the portainer interface if you have an ssh
 
 # Troubleshotting
 
-Someimes docker fails to start containers.  Try `sudo service docker restart` on the machine with the issues
+Someimes docker fails to start containers.  Try `sudo service docker restart` on the machine with the issues.  Beware that the assets are not recompiled on each change.  If you need to re-deploy the stack do it manually, use portainer, or taint the terraform resource and terraform apply.

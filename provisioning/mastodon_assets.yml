@@ -3,7 +3,7 @@
 # and be done before the mastodon stack comes up
 version: '3.5'
 services:
-  assets_precompile:
+  precompile:
     image: tootsuite/mastodon:v2.4.4
     env_file: mastodon_env.production
     command: rails assets:precompile
@@ -12,9 +12,13 @@ services:
       - public-packs:/mastodon/public/packs
     deploy:
       mode: global
+      labels:
+        - traefik.enable=false
       restart_policy:
         condition: none
 volumes:
   public-assets:
+    name: mastodon_public-assets
   public-packs:
+    name: mastodon_public-packs
   

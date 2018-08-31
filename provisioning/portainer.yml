@@ -16,6 +16,8 @@ services:
       - agent_network
     deploy:
       mode: global
+      labels:
+        - traefik.enable=false
       placement:
         constraints: [node.platform.os == linux]
 
@@ -31,6 +33,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      labels:
+        - traefik.enable=false
       placement:
         constraints: [node.role == manager]
 

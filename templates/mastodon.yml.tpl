@@ -6,13 +6,13 @@ services:
     env_file: mastodon_env.production
     networks:
       - internal-net
-    labels:
-      - traefik.enable=false
     volumes:
       - postgres:/var/lib/postgresql/data
     deploy:
       mode: replicated
       replicas: 1
+      labels:
+        - traefik.enable=false
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -28,8 +28,6 @@ services:
       - redis:/data
     networks:
       - internal-net
-    labels:
-      - traefik.enable=false
     command: [
       "redis-server", 
       "--appendonly", "yes", 
@@ -38,6 +36,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      labels:
+        - traefik.enable=false
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -88,6 +88,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      labels:
+        - traefik.enable=false
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -163,8 +165,6 @@ services:
     networks:
       - internal-net
       - external-net
-    labels:
-      - traefik.enable=false
     depends_on:
       - db
       - redis
@@ -175,6 +175,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      labels:
+        - traefik.enable=false
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -191,14 +193,11 @@ networks:
     attachable: true
   external-net:
 
+# public-assets and public-packs are also in use by the mastodon_assets service
 volumes:
   postgres:
   redis:
   public-system:
-  public-assets:
-    external:
-      name: mastodon_assets_public-assets
+  public-assets: 
   public-packs:
-    external:
-      name: mastodon_assets_public-packs
   acme-storage:

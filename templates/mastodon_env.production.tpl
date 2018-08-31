@@ -117,14 +117,15 @@ SMTP_FROM_ADDRESS=${smtp_from_address}
 # S3_ENDPOINT=
 # S3_SIGNATURE_VERSION=
 
+# This is configured for Digital Ocean spaces
 S3_ENABLED=true
 S3_BUCKET=${s3_bucket}
 AWS_ACCESS_KEY_ID=${s3_access_key_id}
 AWS_SECRET_ACCESS_KEY=${s3_secret_access_key}
 S3_REGION=${s3_region}
 S3_PROTOCOL=${s3_protocol}
-S3_HOSTNAME=${s3_bucket}.${s3_hostname}
-S3_ENDPOINT=${s3_hostname}}
+S3_HOSTNAME=${s3_hostname}
+S3_ENDPOINT=${s3_protocol}://${s3_hostname}
 
 
 # Swift (optional)

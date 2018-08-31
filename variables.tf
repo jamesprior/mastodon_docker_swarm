@@ -14,7 +14,9 @@ variable "smtp_password" { }
 variable "s3_access_key_id" { }
 variable "s3_secret_access_key" { }
 
-
+#
+# digital ocean configs
+#
 # This should be your current IP address, used to lock down SSH access
 variable "allowed_ssh_ips" { default = ["136.33.32.150"] }
 
@@ -37,6 +39,9 @@ variable "provision_ssh_key" {
   description = "File path to SSH private key used to access the provisioned nodes. Ensure this key is listed in the manager and work ssh keys list"
 }
 
+#
+# Mastodon configs
+#
 # Your email address used for Lets Encrypt
 variable "acme_email" { default = "acme@kcmo.social" }
 # Set this to "true" to use the staging ca server and turn on debugging in traefic
@@ -52,6 +57,14 @@ variable "s3_region" { default = "nyc3" }
 variable "s3_protocol" { default = "https" }
 variable "s3_hostname" { default = "nyc3.digitaloceanspaces.com" }
 
+
+#
+# Swarm machine configs
+#
+# The image below was set up using custom_image/setup.sh and found from the list with
+# curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer SOME_TOKEN_HERE" "https://api.digitalocean.com/v2/images?page=1&per_page=1&private=true"
+# It's known in my account as ubuntu-18.04.1-docker-18.06.1ce
+variable "swarm_image" { default = "37743425" }
 
 # The number of manager nodes to create in the docker swarm, manager
 # nodes will be assigned work

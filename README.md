@@ -18,6 +18,8 @@ Take a moment to review variables.tf and update any that don't fit your needs.  
 Review backend.tf and update the terraform state.
 
 run terraform init
+## Droplet Images
+This uses a private image provisioned with the `custom_image/setup.sh` script.  The pre-built `docker-16-04` images from DO were using docker 17 and seemed to have stability issues
 
 ## About the result
 
@@ -82,11 +84,16 @@ While you wait for the assets to compile you can setup the database too.  SSH to
     tootsuite/mastodon:v2.4.4 \
     rails db:setup
 
-Once asset compliation has completed restart the web services.  You can use portainer or run
+Once asset compliation has completed restart the web service AND the sidekiq service.  You can use portainer or run
 
     docker service scale mastodon_web=0
+    docker service scale mastodon_sidekiq=0
     docker service scale mastodon_web=2
+    docker service scale mastodon_sidekiq=1
     
-to force a restart
+to force a restart.  You can also use the portainer interface if you have an ssh tunnel up by visiting http://localhost:9000/#/services, checking off the two services, and restarting them.
     
 
+# Troubleshotting
+
+Someimes docker fails to start containers.  Try `sudo service docker restart` on the machine with the issues

@@ -1,0 +1,20 @@
+# On a manager run : docker stack deploy --compose-file=mastodon_assets.yml mastodon_assets
+# The volumes here must match the mastodon.yml file, it will pre-compile assets on deploy
+# and be done before the mastodon stack comes up
+version: '3.5'
+services:
+  assets_precompile:
+    image: tootsuite/mastodon:v2.4.4
+    env_file: mastodon_env.production
+    command: rails assets:precompile
+    volumes:
+      - public-assets:/mastodon/public/assets
+      - public-packs:/mastodon/public/packs
+    deploy:
+      mode: global
+      restart_policy:
+        condition: none
+volumes:
+  public-assets:
+  public-packs:
+  

@@ -128,19 +128,6 @@ services:
       placement:
         constraints:
           - node.labels.db != true
-  precompile_assets:
-    image: tootsuite/mastodon:v2.4.4
-    env_file: mastodon_env.production
-    command: rails assets:precompile
-    volumes:
-      - public-assets:/mastodon/public/assets
-      - public-packs:/mastodon/public/packs
-    networks: # otherwise it will create a default network
-      - external-net
-    deploy:
-      mode: global
-      restart_policy:
-        condition: none
   streaming:
     image: tootsuite/mastodon:v2.4.4
     env_file: mastodon_env.production
@@ -209,5 +196,9 @@ volumes:
   redis:
   public-system:
   public-assets:
-  public-packs:  
+    external:
+      name: mastodon_assets_public-assets
+  public-packs:
+    external:
+      name: mastodon_assets_public-packs
   acme-storage:

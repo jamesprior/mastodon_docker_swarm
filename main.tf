@@ -67,6 +67,7 @@ resource "null_resource" "deploy_stack" {
   depends_on = ["module.swarm-cluster"]
   
   triggers = {
+    mastodon_assets_sha1 = "${sha1(file("provisioning/mastodon_assets.yml"))}"
     mastodon_yml_sha1  = "${sha1(file("templates/mastodon.yml.tpl"))}"
     mastodon_env_sha1  = "${sha1(file("templates/mastodon_env.production.tpl"))}"
     portainer_yml_sha1 = "${sha1(file("provisioning/portainer.yml"))}"
@@ -93,13 +94,20 @@ resource "null_resource" "deploy_stack" {
     content     = "${file("provisioning/portainer.yml")}"
     destination = "/home/mastodon/portainer.yml"
   }
+  
+  provisioner "file" {
+    content     = "${file("provisioning/mastodon_assets.yml")}"
+    destination = "/home/mastodon/mastodon_assets.yml"
+  }
+  
 
   provisioner "remote-exec" {
     inline = [
+      "docker stack deploy --compose-file=mastodon_assets.yml mastodon_assets",
+      "docker stack deploy --compose-file=portainer.yml portainer",
       "docker node update --label-add db=true manager-01",
       "docker node update --label-add redis=true manager-02",
       "docker node update --label-add traefik=true manager-02",
-      "docker stack deploy --compose-file=portainer.yml portainer",
       "docker stack deploy --compose-file=mastodon.yml mastodon"
     ]
   }

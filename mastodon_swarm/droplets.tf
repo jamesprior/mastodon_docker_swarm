@@ -1,5 +1,5 @@
 data "template_file" "node_setup" {
-  template = "${file("templates/node_setup.sh.tpl")}"
+  template = "${file("${path.module}/templates/node_setup.sh.tpl")}"
 
   vars {
     do_droplan_token   = "${var.do_droplan_token}"

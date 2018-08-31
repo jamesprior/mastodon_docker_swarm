@@ -11,6 +11,8 @@ variable "vapid_public_key" { }
 variable "vapid_private_key" { }
 variable "smtp_login" { }
 variable "smtp_password" { }
+variable "s3_access_key_id" { }
+variable "s3_secret_access_key" { }
 
 
 # This should be your current IP address, used to lock down SSH access
@@ -43,6 +45,12 @@ variable "traefik_debug" { default = "true" }
 variable "smtp_server" { default = "email-smtp.us-east-1.amazonaws.com" }
 variable "smtp_port" { default="587" }
 variable "smtp_from_address" { default = "notifications@kcmo.social" }
+
+
+variable "s3_bucket" { default = "kcmo-social" }
+variable "s3_region" { default = "nyc3" }
+variable "s3_protocol" { default = "https" }
+variable "s3_hostname" { default = "nyc3.digitaloceanspaces.com" }
 
 
 # The number of manager nodes to create in the docker swarm, manager

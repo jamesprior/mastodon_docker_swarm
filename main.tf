@@ -42,18 +42,24 @@ data "template_file" "mastodon_env" {
   template = "${file("templates/mastodon_env.production.tpl")}"
 
   vars {
-    redis_pw          = "${random_string.redis_pw.result}"
-    postgres_pw       = "${random_string.postgres_pw.result}"
-    domain_name       = "${var.domain_name}"
-    secret_key_base   = "${random_id.secret_key_base.hex}"
-    otp_secret        = "${random_id.otp_secret.hex}"
+    redis_pw           = "${random_string.redis_pw.result}"
+    postgres_pw        = "${random_string.postgres_pw.result}"
+    domain_name        = "${var.domain_name}"
+    secret_key_base    = "${random_id.secret_key_base.hex}"
+    otp_secret         = "${random_id.otp_secret.hex}"
     smtp_from_address  = "${var.smtp_from_address}"
     smtp_login         = "${var.smtp_login}"
     smtp_password      = "${var.smtp_password}"
     smtp_server        = "${var.smtp_server}"
     smtp_port          = "${var.smtp_port}"
-    vapid_private_key = "${var.vapid_private_key}"
-    vapid_public_key  = "${var.vapid_public_key}"
+    vapid_private_key  = "${var.vapid_private_key}"
+    vapid_public_key   = "${var.vapid_public_key}"
+    s3_bucket          = "${var.s3_bucket}"
+    s3_access_key_id   = "${var.s3_access_key_id}"
+    s3_secret_access_key = "${var.s3_secret_access_key}"
+    s3_region          = "${var.s3_region}"
+    s3_protocol        = "https"
+    s3_hostname        = "${var.s3_hostname}"
   }
 }
 

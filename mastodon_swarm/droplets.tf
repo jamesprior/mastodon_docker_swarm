@@ -14,7 +14,7 @@ module "swarm-cluster" {
 
   total_managers    = "${var.swarm_manager_count}" 
   total_workers     = "${var.swarm_worker_count}" 
-  domain            = "${var.domain_name}"
+  domain            = "${local.swarm_hostname}"
   provision_ssh_key = "${var.provision_ssh_key}"
   provision_user    = "root"
   region            = "${var.digitalocean_region}"

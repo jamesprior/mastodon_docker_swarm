@@ -1,9 +1,6 @@
-output "domain_name" {
-  value = "${var.domain_name}"
-}
 
 output "first_manager" {
-  value = "manager-01.${var.digitalocean_region}.${var.domain_name}"
+  value = "manager-01.${var.digitalocean_region}.${local.node_subdomain}"
 }
 
 output "manager_ips" {
@@ -13,3 +10,8 @@ output "manager_ips" {
 output "worker_ips" {
   value = "${module.swarm-cluster.worker_ips}"
 }
+
+output "swarm_hostname" {
+  value = "${local.swarm_hostname}"
+}
+

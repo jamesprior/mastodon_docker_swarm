@@ -21,7 +21,7 @@ DB_PORT=5432
 # Federation
 # Note: Changing LOCAL_DOMAIN at a later time will cause unwanted side effects, including breaking all existing federation.
 # LOCAL_DOMAIN should *NOT* contain the protocol part of the domain e.g https://example.com.
-LOCAL_DOMAIN=${hostname}
+LOCAL_DOMAIN=${swarm_hostname}
 
 # Changing LOCAL_HTTPS in production is no longer supported. (Mastodon will always serve https:// links)
 

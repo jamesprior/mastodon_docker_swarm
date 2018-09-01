@@ -126,7 +126,7 @@ services:
         - "traefik.backend=web"
         - "traefik.port=3000"
         - "traefik.docker.network=mastodon_external-net"
-        - "traefik.frontend.rule=Host:${swarm_hostname}"
+        - "traefik.frontend.rule=Host:${swarm_hostname},www.${swarm_hostname}"
       placement:
         constraints:
           - node.labels.db != true
@@ -154,7 +154,7 @@ services:
         - "traefik.port=4000"
         - "traefik.docker.network=mastodon_external-net"
         - "traefik.backend=streaming"
-        - "traefik.frontend.rule=Host:${swarm_hostname};PathPrefixStrip:/api/v1/streaming"
+        - "traefik.frontend.rule=Host:${swarm_hostname},www.${swarm_hostname};PathPrefixStrip:/api/v1/streaming"
       placement:
         constraints:
           - node.labels.db != true

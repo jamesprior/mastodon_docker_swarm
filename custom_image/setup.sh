@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Below is what created the current image.  Before creating a new image
+# port anything in user_data.sh into here
+
 ########################################################################
 # Docker setup
 ########################################################################
@@ -14,7 +17,7 @@ sudo apt install -yy docker-ce
 ########################################################################
 # UFW setup
 ########################################################################
-ufw limit 22/tcp
+ufw limit 22/tcp 
 ufw allow 2376/tcp
 ufw allow 2377/tcp
 ufw allow 7946/tcp

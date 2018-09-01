@@ -1,6 +1,6 @@
 
 output "first_manager" {
-  value = "manager-01.${var.digitalocean_region}.${local.node_subdomain}"
+  value = "manager-01.${local.node_subdomain}"
 }
 
 output "manager_ips" {

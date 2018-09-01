@@ -22,11 +22,13 @@ module "swarm-cluster" {
   manager_ssh_keys  = "${var.ssh_key_ids}"
   manager_image     = "${var.swarm_image}"
   manager_size      = "${var.swarm_manager_size}"
+  manager_user_data = "${file("${path.module}/provisioning/user_data.sh")}"
   manager_tags      = ["${digitalocean_tag.project_name.id}", "${digitalocean_tag.manager.id}"]
   
   worker_ssh_keys   = "${var.ssh_key_ids}"
   worker_image      = "${var.swarm_image}"
   worker_size       = "${var.swarm_worker_size}"
+  worker_user_data = "${file("${path.module}/provisioning/user_data.sh")}"
   worker_tags       = ["${digitalocean_tag.project_name.id}", "${digitalocean_tag.worker.id}"]
 }
 
@@ -54,9 +56,7 @@ resource "null_resource" "manager_provisioner" {
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /tmp/node_setup.sh",
-      "/tmp/node_setup.sh",
-      "rm /tmp/node_setup.sh",
+      "chmod +x /tmp/node_setup.sh && /tmp/node_setup.sh && rm /tmp/node_setup.sh",
     ]
   }
 }
@@ -83,9 +83,7 @@ resource "null_resource" "worker_provisioner" {
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /tmp/node_setup.sh",
-      "/tmp/node_setup.sh",
-      "rm /tmp/node_setup.sh",
+      "chmod +x /tmp/node_setup.sh && /tmp/node_setup.sh && rm /tmp/node_setup.sh",
     ]
   }
 }

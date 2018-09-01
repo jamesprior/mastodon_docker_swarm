@@ -117,6 +117,10 @@ services:
     deploy:
       mode: replicated
       replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 5s
+        order: start-first
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -145,6 +149,10 @@ services:
     deploy:
       mode: replicated
       replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 5s
+        order: start-first
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -175,13 +183,17 @@ services:
     deploy:
       mode: replicated
       replicas: 1
-      labels:
-        - traefik.enable=false
+      update_config:
+        parallelism: 1
+        delay: 5s
+        order: start-first
       restart_policy:
         condition: on-failure
         delay: 5s
         max_attempts: 3
         window: 10s
+      labels:
+        - traefik.enable=false
       placement:
         constraints:
           - node.labels.db != true

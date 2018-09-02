@@ -1,8 +1,4 @@
 
-locals {
-  all_swarm_ips = "${concat(module.swarm-cluster.manager_ips, module.swarm-cluster.worker_ips)}"
-}
-
 /*resource "digitalocean_domain" "mastodon_domain" {
   name       = "${var.domain_name}"
   ip_address = ""

@@ -26,12 +26,21 @@ resource "random_id" "otp_secret" {
   byte_length = 64
 }
 
+data "template_file" "mastodon_assets" {
+  template = "${file("${path.module}/templates/precompile_assets.sh.tpl")}"
+
+  vars {
+    mastodon_image     = "${var.mastodon_image}"
+  }
+}
+
 data "template_file" "mastodon_yml" {
   template = "${file("${path.module}/templates/mastodon.yml.tpl")}"
 
   vars {
     acme_email         = "${var.acme_email}"
     acme_caserver      = "${local.acme_caserver}"
+    mastodon_image     = "${var.mastodon_image}"
     swarm_hostname     = "${local.swarm_hostname}"
     redis_pw           = "${random_string.redis_pw.result}"
     traefik_debug_flag = "${local.traefik_debug_flag}"
@@ -90,25 +99,28 @@ resource "null_resource" "deploy_portainer" {
 }
 
 # Compile the assets in a volume on each node in the swarm.
-# Note that this will copy the environment file but the deploy
+# Note that this will copy the environment file but it 
 # will not be triggered if the environment file changes.  
+# This will be triggered if the image changes
 resource "null_resource" "deploy_mastodon_assets" {
   depends_on = ["module.swarm-cluster"]
+  count  = "${var.swarm_manager_count + var.swarm_worker_count}"
 
   triggers = {
-    mastodon_assets_sha1 = "${sha1(file("${path.module}/provisioning/mastodon_assets.yml"))}"
+    mastodon_image     = "${var.mastodon_image}"
+    all_swarm_ips      = "${local.all_swarm_ips[count.index]}"
   }
   
   connection {
-    host        = "${module.swarm-cluster.manager_ips[0]}"
+    host        = "${local.all_swarm_ips[count.index]}"
     type        = "ssh"
     user        = "mastodon"
     private_key = "${file("${var.provision_ssh_key}")}"
   }
-  
+
   provisioner "file" {
-    content     = "${file("${path.module}/provisioning/mastodon_assets.yml")}"
-    destination = "/home/mastodon/mastodon_assets.yml"
+    content     = "${data.template_file.mastodon_assets.rendered}"
+    destination = "/home/mastodon/precompile_assets.sh"
   }
   
   provisioner "file" {
@@ -118,7 +130,9 @@ resource "null_resource" "deploy_mastodon_assets" {
   
   provisioner "remote-exec" {
     inline = [
-      "docker stack deploy --compose-file=mastodon_assets.yml mastodon_assets",
+      "chmod +x /home/mastodon/precompile_assets.sh",
+      "/home/mastodon/precompile_assets.sh",
+      "rm /home/mastodon/precompile_assets.sh"
     ]
   }
 }
@@ -158,6 +172,9 @@ resource "null_resource" "deploy_mastodon" {
       "docker node update --label-add db=true manager-01",
       "docker node update --label-add redis=true manager-02",
       "docker node update --label-add traefik=true manager-02",
+      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true manager-01",
+      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true manager-02",
+      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true manager-03",
       "docker stack deploy --compose-file=mastodon.yml mastodon"
     ]
   }

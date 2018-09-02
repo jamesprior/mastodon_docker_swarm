@@ -99,7 +99,7 @@ services:
         constraints:
           - node.labels.traefik == true
   web:
-    image: tootsuite/mastodon:v2.4.4
+    image: ${mastodon_image}
     env_file: mastodon_env.production
     command: bash -c "rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000 -b '0.0.0.0'"
     ports:
@@ -133,9 +133,9 @@ services:
         - "traefik.frontend.rule=Host:${swarm_hostname},www.${swarm_hostname}"
       placement:
         constraints:
-          - node.labels.db != true
+          - node.labels.web == true
   streaming:
-    image: tootsuite/mastodon:v2.4.4
+    image: ${mastodon_image}
     env_file: mastodon_env.production
     command: yarn start
     ports:
@@ -165,9 +165,9 @@ services:
         - "traefik.frontend.rule=Host:${swarm_hostname},www.${swarm_hostname};PathPrefixStrip:/api/v1/streaming"
       placement:
         constraints:
-          - node.labels.db != true
+          - node.labels.streaming == true
   sidekiq:
-    image: tootsuite/mastodon:v2.4.4
+    image: ${mastodon_image}
     env_file: mastodon_env.production
     command: bundle exec sidekiq -q default -q mailers -q pull -q push
     networks:
@@ -196,7 +196,7 @@ services:
         - traefik.enable=false
       placement:
         constraints:
-          - node.labels.db != true
+          - node.labels.sidekiq == true
 
 networks:
   internal-net:
@@ -205,7 +205,7 @@ networks:
     attachable: true
   external-net:
 
-# public-assets and public-packs are also in use by the mastodon_assets service
+# public-assets and public-packs are volumes created by the precompile_assets.sh provisioning script
 volumes:
   postgres:
   redis:

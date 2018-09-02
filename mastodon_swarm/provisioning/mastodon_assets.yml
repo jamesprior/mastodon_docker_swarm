@@ -3,6 +3,38 @@
 # and be done before the mastodon stack comes up
 version: '3.5'
 services:
+  s3sync_assets:
+    image: elementar/s3-volume
+    env_file: mastodon_env.production
+    command: /public-assets s3://mybucket/public-assets
+    volumes:
+      - public-assets:/public-assets
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - traefik.enable=false
+      restart_policy:
+        condition: none
+      placement:
+        constraints:
+          - node.labels.db == true
+  s3sync_packs:
+    image: elementar/s3-volume
+    env_file: mastodon_env.production
+    command: /public-packs s3://mybucket/public-packs
+    volumes:
+      - public-packs:/public-packs
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - traefik.enable=false
+      restart_policy:
+        condition: none
+      placement:
+        constraints:
+          - node.labels.db == true
   precompile:
     image: tootsuite/mastodon:v2.4.4
     env_file: mastodon_env.production
@@ -11,14 +43,20 @@ services:
       - public-assets:/mastodon/public/assets
       - public-packs:/mastodon/public/packs
     deploy:
-      mode: global
+    deploy:
+      mode: replicated
+      replicas: 1
       labels:
         - traefik.enable=false
       restart_policy:
-        condition: none
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 20s
+      placement:
+        constraints:
+          - node.labels.db == true
 volumes:
   public-assets:
-    name: mastodon_public-assets
   public-packs:
-    name: mastodon_public-packs
   

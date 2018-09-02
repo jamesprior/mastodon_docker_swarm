@@ -42,6 +42,7 @@ variable "provision_ssh_key" {
 #
 # Mastodon configs
 #
+variable "mastodon_image" { default = "tootsuite/mastodon:v2.4.4" }
 # Your email address used for Lets Encrypt
 variable "acme_email" { default = "acme@kcmo.social" }
 # Set this to "true" to use the staging ca server and turn on debugging in traefic

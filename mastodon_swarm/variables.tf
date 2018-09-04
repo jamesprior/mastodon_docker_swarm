@@ -5,8 +5,8 @@ variable "vapid_public_key" { }
 variable "vapid_private_key" { }
 variable "smtp_login" { }
 variable "smtp_password" { }
-variable "s3_access_key_id" { }
-variable "s3_secret_access_key" { }
+variable "aws_access_key_id" { }
+variable "aws_secret_access_key" { }
 
 # The name of the mastodon project, this will be used for tagging resources and in
 # droplet names
@@ -53,10 +53,15 @@ variable "smtp_port" { default="587" }
 variable "smtp_from_address" { default = "notifications@kcmo.social" }
 
 
-variable "s3_bucket" { default = "kcmo-social" }
+variable "s3_bucket" { }
 variable "s3_region" { default = "nyc3" }
 variable "s3_protocol" { default = "https" }
 variable "s3_hostname" { default = "nyc3.digitaloceanspaces.com" }
+
+#
+# backup configs
+#
+variable "s3_backup_bucket" {  }
 
 
 #

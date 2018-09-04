@@ -8,8 +8,8 @@ variable "vapid_public_key" { }
 variable "vapid_private_key" { }
 variable "smtp_login" { }
 variable "smtp_password" { }
-variable "s3_access_key_id" { }
-variable "s3_secret_access_key" { }
+variable "aws_access_key_id" { }
+variable "aws_secret_access_key" { }
 
 
 variable "aws_region" { default = "us-east-2" }
@@ -27,6 +27,12 @@ variable "domain_name" { default = "kcmo.social"}
 # Set this to "true" to use the staging ca server and turn on debugging in traefic
 variable "traefik_debug" { default = "true" }
 variable "s3_bucket" { default = "kcmo-social" }
+
+#
+# backup configs
+#
+variable "s3_backup_bucket" { default = "kcmo-social-backups" }
+
 
 #
 # Swarm machine configs

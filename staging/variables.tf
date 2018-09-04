@@ -8,8 +8,8 @@ variable "vapid_public_key" { }
 variable "vapid_private_key" { }
 variable "smtp_login" { }
 variable "smtp_password" { }
-variable "s3_access_key_id" { }
-variable "s3_secret_access_key" { }
+variable "aws_access_key_id" { }
+variable "aws_secret_access_key" { }
 
 
 variable "aws_region" { default = "us-east-2" }

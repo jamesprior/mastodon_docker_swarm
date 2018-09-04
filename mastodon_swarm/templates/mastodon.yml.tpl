@@ -46,36 +46,6 @@ services:
       placement:
         constraints:
           - node.labels.redis == true
-  redis_backup:
-    image: blacklabelops/volumerize:1.2.0
-    volumes:
-      - redis:/mastodon_redis
-      - volumerize_cache:/volumerize-cache
-    env_file: mastodon_env.production
-    environment: 
-      VOLUMERIZE_SOURCE: /mastodon_redis
-      VOLUMERIZE_TARGET: s3://${s3_hostname}/${s3_backup_bucket}/mastodon_redis
-      # Times are UTC, this should be 3am CDT or 4am CST
-      VOLUMERIZE_JOBBER_TIME: 0 0 8 * * * 
-      VOLUMERIZE_FULL_IF_OLDER_THAN: 3D
-      JOB_NAME2: RemoveOldBackups
-      JOB_COMMAND2: /etc/volumerize/remove-older-than 14D
-      JOB_TIME2: 0 0 9 * * *
-    networks:
-      - internal-net
-    deploy:
-      mode: replicated
-      replicas: 1
-      labels:
-        - traefik.enable=false
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 10s
-      placement:
-        constraints:
-          - node.labels.redis == true
   traefik:
     image: traefik:1.6-alpine
     ports:
@@ -128,36 +98,6 @@ services:
       placement:
         constraints:
           - node.labels.traefik == true
-  traefik_backup:
-    image: blacklabelops/volumerize:1.2.0
-    volumes:
-      - acme-storage:/mastodon_acme-storage
-      - volumerize_cache:/volumerize-cache
-    env_file: mastodon_env.production
-    environment: 
-      VOLUMERIZE_SOURCE: /mastodon_acme-storage
-      VOLUMERIZE_TARGET: s3://${s3_hostname}/${s3_backup_bucket}/mastodon_acme-storage
-      # Times are UTC, this should be 3:30am CDT or 4:30am CST
-      VOLUMERIZE_JOBBER_TIME: 0 30 8 * * * 
-      VOLUMERIZE_FULL_IF_OLDER_THAN: 3D
-      JOB_NAME2: RemoveOldBackups
-      JOB_COMMAND2: /etc/volumerize/remove-older-than 14D
-      JOB_TIME2: 0 30 9 * * *
-    networks:
-      - internal-net
-    deploy:
-      mode: replicated
-      replicas: 1
-      labels:
-        - traefik.enable=false
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 10s
-      placement:
-        constraints:
-          - node.labels.redis == true
   web:
     image: ${mastodon_image}
     env_file: mastodon_env.production
@@ -266,11 +206,15 @@ networks:
   external-net:
 
 # public-assets and public-packs are volumes created by the precompile_assets.sh provisioning script
+# bivac seems to be ignoring the labels, but the cron job task is configured to blacklist them too.
 volumes:
   postgres:
   redis:
   public-system:
-  public-assets: 
+  public-assets:
+    labels:
+      - io.bivac.ignore=true
   public-packs:
+    labels:
+      - io.bivac.ignore=true
   acme-storage:
-  volumerize_cache:

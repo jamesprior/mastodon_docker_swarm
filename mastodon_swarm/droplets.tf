@@ -4,6 +4,10 @@ data "template_file" "node_setup" {
   vars {
     do_droplan_token   = "${var.do_droplan_token}"
     do_tag             = "${digitalocean_tag.project_name.name}"
+    s3_backup_bucket   = "${var.s3_backup_bucket}"
+    s3_hostname        = "${var.s3_hostname}"
+    aws_access_key_id   = "${var.aws_access_key_id}"
+    aws_secret_access_key = "${var.aws_secret_access_key}"
   }
 }
 

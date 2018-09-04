@@ -38,9 +38,9 @@ variable "s3_backup_bucket" { default = "kcmo-social-backups" }
 # Swarm machine configs
 #
 # The image below was set up using custom_image/setup.sh and found from the list with
-# curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer SOME_TOKEN_HERE" "https://api.digitalocean.com/v2/images?page=1&per_page=1&private=true"
-# It's known in my account as ubuntu-18.04.1-docker-18.06.1ce
-variable "swarm_image" { default = "37743425" }
+# curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer SOME_TOKEN_HERE" "https://api.digitalocean.com/v2/images?page=1&private=true"
+# It's known in my account as ubuntu-18.04.1-docker-18.06.1ce-B
+variable "swarm_image" { default = "37868963" }
 
 # The number of manager nodes to create in the docker swarm, manager
 # nodes will be assigned work

@@ -17,7 +17,7 @@ sudo apt install -yy docker-ce
 ########################################################################
 # UFW setup
 ########################################################################
-ufw limit 22/tcp 
+ufw allow 22/tcp 
 ufw allow 2376/tcp
 ufw allow 2377/tcp
 ufw allow 7946/tcp
@@ -38,6 +38,10 @@ mkdir -p /home/mastodon/.ssh
 chown mastodon:mastodon /home/mastodon/.ssh
 cp /root/.ssh/authorized_keys /home/mastodon/.ssh/authorized_keys
 chown mastodon:mastodon /home/mastodon/.ssh/authorized_keys
+
+sudo chfn -o umask=0027 mastodon
+chmod  750 /home/mastodon
+
 
 ########################################################################
 # Digital ocean specific setup - monitoring and droplan
@@ -81,4 +85,12 @@ echo never > /sys/kernel/mm/transparent_hugepage/enabled
 exit 0
 EOF
 
-
+########################################################################
+# Install bivac for backups
+# See https://github.com/camptocamp/bivac
+########################################################################
+sudo apt install -yy golang-go
+go get github.com/camptocamp/bivac # installs to /home/mastodon/go/bin
+cp go/bin/bivac /usr/local/bin/
+chmod 755 /usr/local/bin/bivac
+rm -rf /root/go

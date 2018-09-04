@@ -19,7 +19,13 @@ Review backend.tf and update the terraform state.
 
 run terraform init
 ## Droplet Images
-This uses a private image provisioned with the `custom_image/setup.sh` script.  The pre-built `docker-16-04` images from DO were using docker 17 and seemed to have stability issues
+This uses a private image provisioned with the `custom_image/setup.sh` script.  The pre-built `docker-16-04` images from DO were using docker 17 and seemed to have stability issues.
+
+To build your own, start up the smallest droplet available and run the setup script on the server.  After everything has installed power down the server with `shutdown -h now` and use the digital ocean console to take a snapshot of the droplet.  When it's complete get a list of your custom images from the Digital Ocean API with something like:
+
+    curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer SOME_TOKEN_HERE" "https://api.digitalocean.com/v2/images?page=1&private=true"
+    
+Find the image ID corresponding to your new image and set it in the `swarm_image` variable.
 
 ## About the result
 

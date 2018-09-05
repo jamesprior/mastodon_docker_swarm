@@ -26,7 +26,7 @@ variable "domain_name" { default = "kcmo.social"}
 # Mastodon configs
 #
 # Set this to "true" to use the staging ca server and turn on debugging in traefic
-variable "traefik_debug" { default = "true" }
+variable "traefik_debug" { default = "false" }
 variable "s3_bucket" { default = "kcmo-social" }
 
 #

@@ -50,7 +50,7 @@ data "template_file" "mastodon_yml" {
 }
 
 data "template_file" "mastodon_env" {
-  template = "${file("${path.module}/templates/mastodon_env.production.tpl")}"
+  template = "${file("${path.module}/templates/mastodon.env.tpl")}"
 
   vars {
     redis_pw           = "${random_string.redis_pw.result}"
@@ -127,7 +127,7 @@ resource "null_resource" "deploy_mastodon_assets" {
   
   provisioner "file" {
     content     = "${data.template_file.mastodon_env.rendered}"
-    destination = "/home/mastodon/mastodon_env.production"
+    destination = "/home/mastodon/mastodon.env"
   }
   
   provisioner "remote-exec" {
@@ -144,7 +144,7 @@ resource "null_resource" "deploy_mastodon" {
   
   triggers = {
     mastodon_yml_sha1  = "${sha1(file("${path.module}/templates/mastodon.yml.tpl"))}"
-    mastodon_env_sha1  = "${sha1(file("${path.module}/templates/mastodon_env.production.tpl"))}"
+    mastodon_env_sha1  = "${sha1(file("${path.module}/templates/mastodon.env.tpl"))}"
   }
   
   connection {
@@ -161,7 +161,7 @@ resource "null_resource" "deploy_mastodon" {
   
   provisioner "file" {
     content     = "${data.template_file.mastodon_env.rendered}"
-    destination = "/home/mastodon/mastodon_env.production"
+    destination = "/home/mastodon/mastodon.env"
   }
   
   provisioner "file" {

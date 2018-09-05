@@ -5,7 +5,7 @@ version: '3.5'
 services:
   s3sync_assets:
     image: elementar/s3-volume
-    env_file: mastodon_env.production
+    env_file: mastodon.env
     command: /public-assets s3://mybucket/public-assets
     volumes:
       - public-assets:/public-assets
@@ -21,7 +21,7 @@ services:
           - node.labels.db == true
   s3sync_packs:
     image: elementar/s3-volume
-    env_file: mastodon_env.production
+    env_file: mastodon.env
     command: /public-packs s3://mybucket/public-packs
     volumes:
       - public-packs:/public-packs
@@ -37,7 +37,7 @@ services:
           - node.labels.db == true
   precompile:
     image: tootsuite/mastodon:v2.4.4
-    env_file: mastodon_env.production
+    env_file: mastodon.env
     command: rails assets:precompile
     volumes:
       - public-assets:/mastodon/public/assets

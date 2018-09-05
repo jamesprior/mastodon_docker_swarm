@@ -6,7 +6,7 @@
 # Docker should terminate it if it runs for more than six minutes
 
 docker run --rm \
-  --env-file mastodon_env.production \
+  --env-file mastodon.env \
   --stop-timeout 360 \
   -e RAILS_ENV=production \
   -v mastodon_public-assets:/mastodon/public/assets \
@@ -16,6 +16,6 @@ docker run --rm \
 
 compile_success=$?
 # After it completes, remove the env file unless we're on the first manager node
-[ `hostname` != 'manager-01' ] && rm /home/mastodon/mastodon_env.production
+[ `hostname` != 'manager-01' ] && rm /home/mastodon/mastodon.env
 
 exit $compile_success

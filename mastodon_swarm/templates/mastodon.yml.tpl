@@ -3,7 +3,7 @@ version: '3.5'
 services:
   db:
     image: postgres:10.5-alpine
-    env_file: mastodon_env.production
+    env_file: mastodon.env
     networks:
       - internal-net
     volumes:
@@ -23,7 +23,7 @@ services:
           - node.labels.db == true
   redis:
     image: redis:4.0-alpine
-    env_file: mastodon_env.production
+    env_file: mastodon.env
     volumes:
       - redis:/data
     networks:
@@ -100,7 +100,7 @@ services:
           - node.labels.traefik == true
   web:
     image: ${mastodon_image}
-    env_file: mastodon_env.production
+    env_file: mastodon.env
     command: bash -c "rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000 -b '0.0.0.0'"
     ports:
       - "3000"
@@ -136,7 +136,7 @@ services:
           - node.labels.web == true
   streaming:
     image: ${mastodon_image}
-    env_file: mastodon_env.production
+    env_file: mastodon.env
     command: yarn start
     ports:
       - "4000"
@@ -168,7 +168,7 @@ services:
           - node.labels.streaming == true
   sidekiq:
     image: ${mastodon_image}
-    env_file: mastodon_env.production
+    env_file: mastodon.env
     command: bundle exec sidekiq -q default -q mailers -q pull -q push
     networks:
       - internal-net

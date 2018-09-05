@@ -13,7 +13,7 @@ Fill the missing secrets in your new file.  Keep in mind that these are 'secret'
 
 To generate a set of keys for vapid to enable web push run the `generate_vapid_keys.rb` 
 
-Take a moment to review variables.tf and update any that don't fit your needs.  While you're at it, take a look at mastodon_env.prodction.tpl and make sure the mastodon settings are to your taste.
+Take a moment to review variables.tf and update any that don't fit your needs.  While you're at it, take a look at mastodon.env.tpl and make sure the mastodon settings are to your taste.
 
 Review backend.tf and update the terraform state.
 
@@ -54,7 +54,7 @@ To run rake commands ssh to manager-01 and invoke the command with:
 
     docker run --rm \
     --net mastodon_internal-net \
-    --env-file mastodon_env.production \
+    --env-file mastodon.env \
     -e RAILS_ENV=production \
     tootsuite/mastodon:v2.4.4 \
     COMMAND_TO_RUN_HERE
@@ -64,7 +64,7 @@ For example, to make alice an admin ( See https://github.com/tootsuite/documenta
 
     docker run --rm \
     --net mastodon_internal-net \
-    --env-file mastodon_env.production \
+    --env-file mastodon.env \
     -e RAILS_ENV=production \
     -e USERNAME=alice \
     tootsuite/mastodon:v2.4.4 \
@@ -84,7 +84,7 @@ While you wait for the assets to compile you can setup the database too.  SSH to
 
     docker run --rm \
     --net mastodon_internal-net \
-    --env-file mastodon_env.production \
+    --env-file mastodon.env \
     -e RAILS_ENV=production \
     -e SAFETY_ASSURED=1 \
     tootsuite/mastodon:v2.4.4 \

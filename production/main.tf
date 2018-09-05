@@ -8,16 +8,17 @@ module "mastodon_swarm" {
   smtp_password = "${var.smtp_password}"
   aws_access_key_id = "${var.aws_access_key_id}"
   aws_secret_access_key = "${var.aws_secret_access_key}"
-  project_name = "${var.project_name}"
-  domain_name = "${var.domain_name}"
-  traefik_debug = "${var.traefik_debug}"
-  s3_bucket = "${var.s3_bucket}"
-  s3_backup_bucket = "${var.s3_backup_bucket}"
-  swarm_image = "${var.swarm_image}"
-  swarm_manager_count = "${var.swarm_manager_count}"
-  swarm_manager_size = "${var.swarm_manager_size}"
-  swarm_worker_count = "${var.swarm_worker_count}"
-  swarm_worker_size = "${var.swarm_worker_size}"
   backup_aws_access_key_id = "${var.backup_aws_access_key_id}"
   backup_aws_secret_access_key = "${var.backup_aws_secret_access_key}"
+  
+  project_name = "kcmo-social-production"
+  domain_name = "kcmo.social"
+  traefik_debug = "false"
+  s3_bucket = "kcmo-social"
+  s3_backup_bucket = "kcmo-social-backups"
+  swarm_image = "37868963"
+  swarm_manager_count = 3
+  swarm_manager_size = "s-1vcpu-2gb"
+  swarm_worker_count = 0
+  swarm_worker_size = "s-1vcpu-1gb"
 }

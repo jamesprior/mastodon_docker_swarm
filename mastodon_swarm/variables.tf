@@ -71,7 +71,9 @@ variable "s3_backup_bucket" {  }
 #
 # Swarm machine configs
 #
-# You should build your own image
+# You should build your own image.
+# Use custom_image/setup.sh and find the ID with
+# curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer SOME_TOKEN_HERE" "https://api.digitalocean.com/v2/images?page=1&private=true"
 variable "swarm_image" { }
 
 # The number of manager nodes to create in the docker swarm, manager

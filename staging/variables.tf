@@ -31,6 +31,11 @@ variable "traefik_debug" { default = "true" }
 variable "s3_bucket" { default = "kcmo-social-staging" }
 
 #
+# backup configs
+#
+variable "s3_backup_bucket" { default = "kcmo-social-staging-backups" }
+
+#
 # Swarm machine configs
 #
 # The image below was set up using custom_image/setup.sh and found from the list with

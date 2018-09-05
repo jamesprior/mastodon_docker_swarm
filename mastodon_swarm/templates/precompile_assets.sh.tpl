@@ -16,6 +16,6 @@ docker run --rm \
 
 compile_success=$?
 # After it completes, remove the env file unless we're on the first manager node
-[ `hostname` != 'manager-01' ] && rm /home/mastodon/mastodon.env
+[ `hostname` != '${first_manager_hostname}' ] && rm /home/mastodon/mastodon.env
 
 exit $compile_success

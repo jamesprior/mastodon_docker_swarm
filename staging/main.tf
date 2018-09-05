@@ -21,4 +21,6 @@ module "mastodon_swarm" {
   swarm_worker_size = "${var.swarm_worker_size}"
   backup_aws_access_key_id = "${var.backup_aws_access_key_id}"
   backup_aws_secret_access_key = "${var.backup_aws_secret_access_key}"
+  manager_name = "${var.manager_name}"
+  worker_name = "${var.worker_name}"
 }

@@ -18,19 +18,21 @@ module "swarm-cluster" {
 
   total_managers    = "${var.swarm_manager_count}" 
   total_workers     = "${var.swarm_worker_count}" 
-  domain            = "${local.swarm_hostname}"
+  domain            = "${var.domain_name}"
   provision_ssh_key = "${var.provision_ssh_key}"
   provision_user    = "root"
   region            = "${var.digitalocean_region}"
   
   manager_ssh_keys  = "${var.ssh_key_ids}"
   manager_image     = "${var.swarm_image}"
+  manager_name      = "${var.manager_name}"
   manager_size      = "${var.swarm_manager_size}"
   manager_user_data = "${file("${path.module}/provisioning/user_data.sh")}"
   manager_tags      = ["${digitalocean_tag.project_name.id}", "${digitalocean_tag.manager.id}"]
   
   worker_ssh_keys   = "${var.ssh_key_ids}"
   worker_image      = "${var.swarm_image}"
+  worker_name       = "${var.worker_name}"
   worker_size       = "${var.swarm_worker_size}"
   worker_user_data = "${file("${path.module}/provisioning/user_data.sh")}"
   worker_tags       = ["${digitalocean_tag.project_name.id}", "${digitalocean_tag.worker.id}"]

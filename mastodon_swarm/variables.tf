@@ -49,6 +49,8 @@ variable "mastodon_image" { default = "tootsuite/mastodon:v2.4.4" }
 variable "acme_email" { default = "acme@kcmo.social" }
 # Set this to "true" to use the staging ca server and turn on debugging in traefic
 variable "traefik_debug" { default = "true" }
+# false would be the alternative here
+variable "traefik_send_anonymous_usage" { default = "true" }
 
 variable "smtp_server" { default = "email-smtp.us-east-1.amazonaws.com" }
 variable "smtp_port" { default="587" }
@@ -88,3 +90,13 @@ variable "swarm_manager_size" { default = "s-1vcpu-2gb" }
 variable "swarm_worker_count" { default = 0 }
 # The size of the worker nodes, see above for how to fetch a list
 variable "swarm_worker_size" { default = "s-1vcpu-1gb" }
+
+variable "manager_name" {
+  description = "Prefix for name of manager nodes"
+  default     = "manager"
+}
+
+variable "worker_name" {
+  description = "Prefix for name of worker nodes"
+  default     = "worker"
+}

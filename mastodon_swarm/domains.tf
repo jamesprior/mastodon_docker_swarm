@@ -1,15 +1,11 @@
 
-/*resource "digitalocean_domain" "mastodon_domain" {
-  name       = "${var.domain_name}"
-  ip_address = ""
-}*/
 
 resource "digitalocean_record" "manager_records" {
   count  = "${var.swarm_manager_count}"
   
   domain = "${var.domain_name}"
   type   = "A"
-  name   = "${format("%s-%02d.%s", "manager", count.index + 1, local.node_subdomain)}"
+  name   = "${format("%s-%02d.%s", "${var.manager_name}", count.index + 1, var.digitalocean_region)}"
   value  = "${module.swarm-cluster.manager_ips[count.index]}"
 }
 
@@ -18,7 +14,7 @@ resource "digitalocean_record" "worker_records" {
   
   domain = "${var.domain_name}"
   type   = "A"
-  name   = "${format("%s-%02d.%s", "worker", count.index + 1, local.node_subdomain)}"
+  name   = "${format("%s-%02d.%s", "${var.worker_name}", count.index + 1, var.digitalocean_region)}"
   value  = "${module.swarm-cluster.worker_ips[count.index]}"
 }
 

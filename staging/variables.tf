@@ -59,3 +59,14 @@ variable "swarm_manager_size" { default = "s-1vcpu-2gb" }
 variable "swarm_worker_count" { default = 0 }
 # The size of the worker nodes, see above for how to fetch a list
 variable "swarm_worker_size" { default = "s-1vcpu-1gb" }
+
+variable "manager_name" {
+  description = "Prefix for name of manager nodes"
+  default     = "manager-staging"
+}
+
+variable "worker_name" {
+  description = "Prefix for name of worker nodes"
+  default     = "worker-staging"
+}
+

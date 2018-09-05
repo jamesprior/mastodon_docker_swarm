@@ -80,6 +80,7 @@ services:
         "--defaultentrypoints=http,https",
         "--entryPoints=Name:http Address::80 Redirect.EntryPoint:https",
         "--entryPoints=Name:https Address::443 TLS",
+        "--sendAnonymousUsage=${traefik_send_anonymous_usage}",
         "--docker", 
         "--docker.swarmMode", 
         "--docker.watch", 

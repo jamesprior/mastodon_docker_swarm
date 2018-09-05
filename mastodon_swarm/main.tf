@@ -30,7 +30,8 @@ data "template_file" "mastodon_assets" {
   template = "${file("${path.module}/templates/precompile_assets.sh.tpl")}"
 
   vars {
-    mastodon_image     = "${var.mastodon_image}"
+    mastodon_image         = "${var.mastodon_image}"
+    first_manager_hostname = "${var.manager_name}-01"
   }
 }
 
@@ -46,6 +47,7 @@ data "template_file" "mastodon_yml" {
     s3_hostname        = "${var.s3_hostname}"
     redis_pw           = "${random_string.redis_pw.result}"
     traefik_debug_flag = "${local.traefik_debug_flag}"
+    traefik_send_anonymous_usage = "${var.traefik_send_anonymous_usage}"
   }
 }
 
@@ -171,12 +173,12 @@ resource "null_resource" "deploy_mastodon" {
 
   provisioner "remote-exec" {
     inline = [
-      "docker node update --label-add db=true manager-01",
-      "docker node update --label-add redis=true manager-02",
-      "docker node update --label-add traefik=true manager-02",
-      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true manager-01",
-      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true manager-02",
-      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true manager-03",
+      "docker node update --label-add db=true ${var.manager_name}-01",
+      "docker node update --label-add redis=true ${var.manager_name}-02",
+      "docker node update --label-add traefik=true ${var.manager_name}-02",
+      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true ${var.manager_name}01",
+      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true ${var.manager_name}-02",
+      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true ${var.manager_name}-03",
       "docker stack deploy --compose-file=mastodon.yml mastodon"
     ]
   }

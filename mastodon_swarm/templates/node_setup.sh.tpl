@@ -13,8 +13,8 @@ cat <<EOF > /root/bivac_backup.sh
   --full-if-older-than=7D \\
   --blacklist=mastodon_public-assets \\
   --blacklist=mastodon_public-packs \\
-  --aws-access-key-id=${aws_access_key_id} \\
-  --aws-secret-key-id=${aws_secret_access_key}
+  --aws-access-key-id=${backup_aws_access_key_id} \\
+  --aws-secret-key-id=${backup_aws_secret_access_key}
 EOF
 chmod 755 /root/bivac_backup.sh
 

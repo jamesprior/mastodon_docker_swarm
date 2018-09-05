@@ -6,8 +6,8 @@ data "template_file" "node_setup" {
     do_tag             = "${digitalocean_tag.project_name.name}"
     s3_backup_bucket   = "${var.s3_backup_bucket}"
     s3_hostname        = "${var.s3_hostname}"
-    aws_access_key_id   = "${var.aws_access_key_id}"
-    aws_secret_access_key = "${var.aws_secret_access_key}"
+    backup_aws_access_key_id   = "${var.backup_aws_access_key_id}"
+    backup_aws_secret_access_key = "${var.backup_aws_secret_access_key}"
   }
 }
 

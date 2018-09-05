@@ -10,7 +10,8 @@ variable "smtp_login" { }
 variable "smtp_password" { }
 variable "aws_access_key_id" { }
 variable "aws_secret_access_key" { }
-
+variable "backup_aws_access_key_id" { }
+variable "backup_aws_secret_access_key" { }
 
 variable "aws_region" { default = "us-east-2" }
 

@@ -176,7 +176,7 @@ resource "null_resource" "deploy_mastodon" {
       "docker node update --label-add db=true ${var.manager_name}-01",
       "docker node update --label-add redis=true ${var.manager_name}-02",
       "docker node update --label-add traefik=true ${var.manager_name}-02",
-      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true ${var.manager_name}01",
+      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true ${var.manager_name}-01",
       "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true ${var.manager_name}-02",
       "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true ${var.manager_name}-03",
       "docker stack deploy --compose-file=mastodon.yml mastodon"

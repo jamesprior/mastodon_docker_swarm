@@ -2,13 +2,13 @@
 
 # provider setup
 variable "do_token" {}
-variable "do_droplan_token" {}
 variable "aws_access_key" { default = "" }
 variable "aws_secret_key" { default = "" }
 variable "aws_profile" { }
 variable "aws_region" { default = "us-east-2" }
 
 # mastodon env secrets
+variable "do_droplan_token" {}
 variable "vapid_public_key" { }
 variable "vapid_private_key" { }
 variable "smtp_login" { }

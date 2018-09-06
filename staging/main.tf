@@ -1,6 +1,5 @@
 module "mastodon_swarm" {
   source  = "../mastodon_swarm"
-  do_token = "${var.do_token}"
   do_droplan_token = "${var.do_droplan_token}"
   vapid_public_key = "${var.vapid_public_key}"
   vapid_private_key = "${var.vapid_private_key}"
@@ -11,6 +10,17 @@ module "mastodon_swarm" {
   backup_aws_access_key_id = "${var.backup_aws_access_key_id}"
   backup_aws_secret_access_key = "${var.backup_aws_secret_access_key}"
   
+  # Common configs for production and staging
+  allowed_ssh_ips = ["136.33.32.150"]
+  domain_name = "kcmo.social"
+  ssh_key_ids = [ "23516" ]
+  acme_email = "acme@kcmo.social"
+  smtp_server = "email-smtp.us-east-1.amazonaws.com"
+  smtp_port = "587"
+  smtp_from_address = "notifications@kcmo.social"
+  
+  # Staging specific configs
+  mastodon_image = "tootsuite/mastodon:v2.4.4"
   project_name = "kcmo-social-staging"
   domain_name = "kcmo.social"
   subdomain = "staging"

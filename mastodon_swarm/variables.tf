@@ -1,5 +1,4 @@
 # These should be passed in
-variable "do_token" {}
 variable "do_droplan_token" {}
 variable "vapid_public_key" { }
 variable "vapid_private_key" { }
@@ -20,22 +19,21 @@ variable "project_name" { }
 #
 # digital ocean configs
 #
-# This should be your current IP address, used to lock down SSH access
-variable "allowed_ssh_ips" { default = ["136.33.32.150"] }
-
 
 # The site domain
-variable "domain_name" { default = "kcmo.social"}
+variable "domain_name" { }
 # Optionally include all resources in a subdomain, eg staging
 variable "subdomain" { default = "" }
 
 # The region to deploy in
 variable "digitalocean_region" { default = "nyc1" }
 
+# This should be your current IP address, used to lock down SSH access
+variable "allowed_ssh_ips" { type="list" }
 # an array with ssh key IDs, these will be unique to your account.  You should set them
 # in secrets.auto.tfvars
 # See https://developers.digitalocean.com/documentation/v2/#list-all-keys
-variable "ssh_key_ids" { default = [ "23516" ] }
+variable "ssh_key_ids" { type="list" }
 variable "provision_ssh_key" {
   default     = "~/.ssh/id_rsa"
   description = "File path to SSH private key used to access the provisioned nodes. Ensure this key is listed in the manager and work ssh keys list"
@@ -44,17 +42,17 @@ variable "provision_ssh_key" {
 #
 # Mastodon configs
 #
-variable "mastodon_image" { default = "tootsuite/mastodon:v2.4.4" }
+variable "mastodon_image" { }
 # Your email address used for Lets Encrypt
-variable "acme_email" { default = "acme@kcmo.social" }
+variable "acme_email" { }
 # Set this to "true" to use the staging ca server and turn on debugging in traefic
 variable "traefik_debug" { default = "true" }
 # false would be the alternative here
 variable "traefik_send_anonymous_usage" { default = "true" }
 
-variable "smtp_server" { default = "email-smtp.us-east-1.amazonaws.com" }
-variable "smtp_port" { default="587" }
-variable "smtp_from_address" { default = "notifications@kcmo.social" }
+variable "smtp_server" { }
+variable "smtp_port" { }
+variable "smtp_from_address" { }
 
 
 variable "s3_bucket" { }

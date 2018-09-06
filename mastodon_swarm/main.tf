@@ -1,5 +1,9 @@
 # Deploys the stacks to the cluster once it is provisioned
 
+terraform {
+  required_version = ">= 0.11.6"
+}
+
 locals {
   acme_prod_caserver = "https://acme-v02.api.letsencrypt.org/directory"
   acme_staging_caserver = "https://acme-staging-v02.api.letsencrypt.org/directory"

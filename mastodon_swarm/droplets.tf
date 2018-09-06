@@ -2,12 +2,12 @@ data "template_file" "node_setup" {
   template = "${file("${path.module}/templates/node_setup.sh.tpl")}"
 
   vars {
-    do_droplan_token   = "${var.do_droplan_token}"
-    do_tag             = "${digitalocean_tag.project_name.name}"
-    s3_backup_bucket   = "${var.s3_backup_bucket}"
-    s3_hostname        = "${var.s3_hostname}"
-    backup_aws_access_key_id   = "${var.backup_aws_access_key_id}"
+    backup_aws_access_key_id     = "${var.backup_aws_access_key_id}"
     backup_aws_secret_access_key = "${var.backup_aws_secret_access_key}"
+    do_droplan_token             = "${var.do_droplan_token}"
+    do_tag                       = "${digitalocean_tag.project_name.name}"
+    s3_backup_bucket             = "${var.s3_backup_bucket}"
+    s3_hostname                  = "${var.s3_hostname}"
   }
 }
 
@@ -34,7 +34,7 @@ module "swarm-cluster" {
   worker_image      = "${var.swarm_image}"
   worker_name       = "${var.worker_name}"
   worker_size       = "${var.swarm_worker_size}"
-  worker_user_data = "${file("${path.module}/provisioning/user_data.sh")}"
+  worker_user_data  = "${file("${path.module}/provisioning/user_data.sh")}"
   worker_tags       = ["${digitalocean_tag.project_name.id}", "${digitalocean_tag.worker.id}"]
 }
 

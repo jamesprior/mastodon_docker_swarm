@@ -31,7 +31,6 @@ resource "digitalocean_record" "swarm_fe_round_robin" {
 resource "digitalocean_record" "www_cname" {
   domain = "${var.domain_name}"
   type   = "CNAME"
-  name   = "www.${local.swarm_hostname}"
   name   = "${var.subdomain != "" ? "www.${var.subdomain}" : "www"}"
   value  = "${local.swarm_hostname == var.domain_name ? "${var.domain_name}." : "${local.swarm_hostname}."}"
 }

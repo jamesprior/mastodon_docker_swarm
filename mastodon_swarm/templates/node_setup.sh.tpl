@@ -22,6 +22,6 @@ chmod 755 /root/bivac_backup.sh
 # Run droplan every five minutes
 echo '*/5 * * * * root PATH=/sbin:/usr/bin:/bin DO_KEY=${do_droplan_token} DO_TAG=${do_tag} /opt/droplan/refresh.sh > /var/log/droplan.log 2>&1' > /etc/cron.d/droplan
 
-# Backup docker volumes every day at 3am
-echo '0 3 * * * root PATH=/sbin:/usr/bin:/bin:/usr/local/bin /root/bivac_backup.sh' > /etc/cron.d/bivac_backup
+# Backup docker volumes every day at 3am central, aka 8am UTC
+echo '0 8 * * * root PATH=/sbin:/usr/bin:/bin:/usr/local/bin /root/bivac_backup.sh' > /etc/cron.d/bivac_backup
 

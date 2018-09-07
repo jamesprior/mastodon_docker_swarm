@@ -134,7 +134,7 @@ services:
         - "traefik.frontend.rule=Host:${swarm_hostname},www.${swarm_hostname}"
       placement:
         constraints:
-          - node.labels.web == true
+          - node.labels.web != false
   streaming:
     image: ${mastodon_image}
     env_file: mastodon.env
@@ -166,7 +166,7 @@ services:
         - "traefik.frontend.rule=Host:${swarm_hostname},www.${swarm_hostname};PathPrefixStrip:/api/v1/streaming"
       placement:
         constraints:
-          - node.labels.streaming == true
+          - node.labels.streaming != false
   sidekiq:
     image: ${mastodon_image}
     env_file: mastodon.env
@@ -197,20 +197,20 @@ services:
         - traefik.enable=false
       placement:
         constraints:
-          - node.labels.sidekiq == true
+          - node.labels.sidekiq != false
 
 networks:
+  external-net:
   internal-net:
     internal: true
     driver: overlay
     attachable: true
-  external-net:
 
 # public-assets and public-packs are volumes created by the precompile_assets.sh provisioning script
 # bivac seems to be ignoring the labels, but the cron job task is configured to blacklist them too.
 volumes:
+  acme-storage:
   postgres:
-  redis:
   public-system:
   public-assets:
     labels:
@@ -218,4 +218,4 @@ volumes:
   public-packs:
     labels:
       - io.bivac.ignore=true
-  acme-storage:
+  redis:

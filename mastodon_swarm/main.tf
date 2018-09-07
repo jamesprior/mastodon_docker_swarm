@@ -8,7 +8,15 @@ locals {
   acme_caserver         = "${(var.traefik_debug == "true" ? local.acme_staging_caserver : local.acme_prod_caserver)}"
   acme_prod_caserver    = "https://acme-v02.api.letsencrypt.org/directory"
   acme_staging_caserver = "https://acme-staging-v02.api.letsencrypt.org/directory"
+  # Postgres always goes on the first manager
+  postgres_node_name    = "${var.manager_name}-01"
+  # Redis will go on the second manager if there is one.
+  #   If there is only one manager and no workers it goes on the first manager.
+  #   Otherwise, it goes on the first worker
+  redis_node_name       = "${(var.swarm_manager_count > 1 ? "${var.manager_name}-02" : (var.swarm_worker_count > 0 ? "${var.worker_name}-01" : "${var.manager_name}-01") )} "
   traefik_debug_flag    = "${(var.traefik_debug == "true" ? "--debug" : "")}"
+  # Traefik goes on the second manager if there are more than one, otherwise it goes on the first manager
+  traefik_node_name     = "${(var.swarm_manager_count > 1 ? "${var.manager_name}-02" : "${var.manager_name}-01")}"
 }
 
 
@@ -112,7 +120,7 @@ resource "null_resource" "deploy_portainer" {
 # This will be triggered if the image changes
 resource "null_resource" "deploy_mastodon_assets" {
   depends_on = ["module.swarm-cluster"]
-  count  = "${var.swarm_manager_count + var.swarm_worker_count}"
+  count  = "${local.swarm_node_count}"
 
   triggers = {
     all_swarm_ips  = "${local.all_swarm_ips[count.index]}"
@@ -177,12 +185,9 @@ resource "null_resource" "deploy_mastodon" {
 
   provisioner "remote-exec" {
     inline = [
-      "docker node update --label-add db=true ${var.manager_name}-01",
-      "docker node update --label-add redis=true ${var.manager_name}-02",
-      "docker node update --label-add traefik=true ${var.manager_name}-02",
-      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true ${var.manager_name}-01",
-      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true ${var.manager_name}-02",
-      "docker node update --label-add web=true --label-add streaming=true --label-add sidekiq=true ${var.manager_name}-03",
+      "docker node update --label-add db=true ${local.postgres_node_name}",
+      "docker node update --label-add redis=true ${local.redis_node_name}",
+      "docker node update --label-add traefik=true ${local.traefik_node_name}",
       "docker stack deploy --compose-file=mastodon.yml mastodon"
     ]
   }

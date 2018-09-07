@@ -20,7 +20,7 @@ resource "digitalocean_record" "worker_records" {
 
 resource "digitalocean_record" "swarm_fe_round_robin" {
   depends_on = ["module.swarm-cluster"]
-  count  = "${var.swarm_manager_count + var.swarm_worker_count}"
+  count  = "${local.swarm_node_count}"
   
   domain = "${var.domain_name}"
   type   = "A"

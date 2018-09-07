@@ -34,21 +34,33 @@ Just be sure not to check the statefile into a public repository because it will
 
 You should now be able to run `terraform init` in `production` and in `staging`.
 
-Edit `staging/main.tf` and `production/main.tf` becuse it's littered with environment specific information.  
-Fill in what you can fix offhand and be prepared to return as you populate the images, keys, and buckets in 
-Digital Ocean.
-
 Copy the sample secrets file into each staging and production environment.
 
     cp secrets.auto.tfvars.example  production/secrets.auto.tfvars
     cp secrets.auto.tfvars.example  staging/secrets.auto.tfvars
 
-
 Keep in mind that these are 'secret' as in they won't be checked into source control, but they may be 
 visible in the terraform state files.  `do_token` and `aws_profile` are used by the default backend but
 look in `mastodon_swarm/variables.tf` for a description of the others.  
 
-To generate a set of keys for vapid to enable web push run the `generate_vapid_keys.rb` script
+Edit `staging/main.tf` and `production/main.tf` becuse it's littered with environment specific information.  
+Fill in what you can fix offhand and be prepared to return as you populate the images, keys, and buckets in 
+Digital Ocean.
+
+Here's a list of things you'll need to create once or configure outside of terraform before setting in
+a `secrets.auto.tfvars` or a `main.tf` file for an environment:
+
+[ ] Digital ocean API token with write access
+[ ] Digital ocean API token with read access for droplan
+[ ] An AWS profile for the terraform backend
+[ ] A public and private key for vapid to enable web push. (See the `generate_vapid_keys.rb` script)
+[ ] An SMTP username, password, port, and hostname
+[ ] A set of credentials, bucket and enpoint in an AWS S3 workalike for user assets
+[ ] A set of credentials, bucket and enpoint in an AWS S3 workalike for backups
+[ ] An SSH key in Digital Ocean
+[ ] A domain name registered and added as a domain to Digital Ocean
+[ ] A droplet image (see next section)
+
 
 # Droplet Images
 This uses a private image provisioned with the `custom_image/setup.sh` script.  The pre-built `docker-16-04` 
@@ -102,6 +114,21 @@ For example, to make alice an admin ( See https://github.com/tootsuite/documenta
 
 You can also use the portainer interface to open a console on one of the containers running 
 mastodon image and run the same rails commands.
+
+# Service placement
+
+Postgres, Redis, and Traefik depend on state stored in docker volumes which are unique per-node, which means
+that they should always be started on the same nodes.  If they need to be moved, it requires admin intervention
+to move the docker volume to a new host, or to restore from a backup.  The web, streaming, and sidekiq services
+are more portable and can run on any node.
+
+Because of that, Postgres, Redis, and Traefik will only run on nodes with labels matching the service name set 
+to true, eg postgres will only run on a node with `postgres=true`.
+
+The more portable workers will run on any available node that has volumes for the mastodon assets.  If you 
+want to prevent them from running on a node you must add a label to the node with the service name set to false.  
+For example, `docker node update --label-add streaming=false manager-01` will prevent docker swarm from placing 
+a streaming container on the `manager-01` node.
 
 # Security
 

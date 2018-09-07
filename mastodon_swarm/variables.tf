@@ -115,7 +115,7 @@ variable "swarm_image" {
 }
 variable "swarm_manager_count" { 
   default     = 3 
-  description = "The number of manager nodes to create in the docker swarm.  Manager nodes will be assigned work.  Currently the only meaningful option is 3.  PRs welcome."
+  description = "The number of manager nodes to create in the docker swarm.  Manager nodes will be assigned work."
 } 
 variable "swarm_manager_size" {
   default = "s-1vcpu-2gb"
@@ -123,7 +123,7 @@ variable "swarm_manager_size" {
 }
 variable "swarm_worker_count" { 
   default     = 0
-  description = "The number of worker nodes to create in the docker swarm.  Currently the only meaningful option is 0.  PRs welcome."
+  description = "The number of worker nodes to create in the docker swarm."
 }
 variable "swarm_worker_size" {
   default = "s-1vcpu-2gb"

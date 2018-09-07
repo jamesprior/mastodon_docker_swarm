@@ -7,7 +7,6 @@
 
 docker run --rm \
   --env-file mastodon.env \
-  --stop-timeout 360 \
   -e RAILS_ENV=production \
   -v mastodon_public-assets:/mastodon/public/assets \
   -v mastodon_public-packs:/mastodon/public/packs \

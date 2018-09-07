@@ -100,7 +100,7 @@ To run rake commands ssh to manager-01 and invoke the command with:
     --net mastodon_internal-net \
     --env-file mastodon.env \
     -e RAILS_ENV=production \
-    tootsuite/mastodon:v2.4.4 \
+    tootsuite/mastodon:v2.5.0 \
     COMMAND_TO_RUN_HERE
     
 For example, to make alice an admin ( See https://github.com/tootsuite/documentation/blob/master/Running-Mastodon/Administration-guide.md for more info)
@@ -110,7 +110,7 @@ For example, to make alice an admin ( See https://github.com/tootsuite/documenta
     --env-file mastodon.env \
     -e RAILS_ENV=production \
     -e USERNAME=alice \
-    tootsuite/mastodon:v2.4.4 \
+    tootsuite/mastodon:v2.5.0 \
     rails mastodon:make_admin
 
 You can also use the portainer interface to open a console on one of the containers running 
@@ -126,9 +126,9 @@ are more portable and can run on any node.
 Because of that, Postgres, Redis, and Traefik will only run on nodes with labels matching the service name set 
 to true, eg postgres will only run on a node with `postgres=true`.
 
-The more portable workers will run on any available node that has volumes for the mastodon assets.  If you 
-want to prevent them from running on a node you must add a label to the node with the service name set to false.  
-For example, `docker node update --label-add streaming=false manager-01` will prevent docker swarm from placing 
+The more portable workers will run on any available node.  If you want to prevent them from running on a node 
+you must add a label to the node with the service name set to false.  For example, 
+`docker node update --label-add streaming=false manager-01` will prevent docker swarm from placing 
 a streaming container on the `manager-01` node.
 
 # Security
@@ -147,9 +147,6 @@ pre-configured with a password, but it is only available via ssh tunneling.
 When starting up a cluster for the first time the scripts have a lot to do.  If a step fails, it is 
 safe to re-run `terraform apply` until it completes.
 
-The first time you apply the terraform it will compile the assets into a volume on each host.  
-Once it is complete teraform will start the mastodon stack.
-
 When the terraform apply is complete you will need to set up the database.  SSH to a manager and run:
 
     docker run --rm \
@@ -157,32 +154,18 @@ When the terraform apply is complete you will need to set up the database.  SSH 
     --env-file mastodon.env \
     -e RAILS_ENV=production \
     -e SAFETY_ASSURED=1 \
-    tootsuite/mastodon:v2.4.4 \
+    tootsuite/mastodon:v2.5.0 \
     rails db:setup
     
 
 # Making changes
 
 If you change the mastodon environment, variables used in the environment, or the mastodon stack just re-run
-`terraform apply`.  Beware that the assets are not recompiled on each change.  
+`terraform apply`.  
 
 You can also ssh to a server and do it manually, use portainer, or force a redeploy by tainting the 
 terraform resource with `terraform taint -module=mastodon_swarm null_resource.deploy_mastodon` and 
 running `terraform apply`.
-
-If asset compliation has changed you need to restart the web service AND the sidekiq service.  You can use 
-portainer or run
-
-    docker service scale mastodon_web=0
-    docker service scale mastodon_sidekiq=0
-    docker service scale mastodon_web=2
-    docker service scale mastodon_sidekiq=1
-    
-to force a restart.  You can also use the portainer interface if you have an ssh tunnel up by 
-visiting http://localhost:9000/#/services, checking off the two services, clicking the restart button.
-
-To recompile the assets taint the provisioner with 
-`terraform taint -module=mastodon_swarm null_resource.deploy_mastodon_assets` and run`terraform apply`.  
 
 # Backups
 

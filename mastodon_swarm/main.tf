@@ -38,15 +38,6 @@ resource "random_id" "otp_secret" {
   byte_length = 64
 }
 
-data "template_file" "mastodon_assets" {
-  template = "${file("${path.module}/templates/precompile_assets.sh.tpl")}"
-
-  vars {
-    mastodon_image         = "${var.mastodon_image}"
-    first_manager_hostname = "${var.manager_name}-01"
-  }
-}
-
 data "template_file" "mastodon_yml" {
   template = "${file("${path.module}/templates/mastodon.yml.tpl")}"
 
@@ -114,47 +105,8 @@ resource "null_resource" "deploy_portainer" {
   }
 }
 
-# Compile the assets in a volume on each node in the swarm.
-# Note that this will copy the environment file but it 
-# will not be triggered if the environment file changes.  
-# This will be triggered if the image changes
-resource "null_resource" "deploy_mastodon_assets" {
-  depends_on = ["module.swarm-cluster"]
-  count  = "${local.swarm_node_count}"
-
-  triggers = {
-    all_swarm_ips  = "${local.all_swarm_ips[count.index]}"
-    mastodon_image = "${var.mastodon_image}"
-  }
-  
-  connection {
-    host        = "${local.all_swarm_ips[count.index]}"
-    type        = "ssh"
-    user        = "mastodon"
-    private_key = "${file("${var.provision_ssh_key}")}"
-  }
-
-  provisioner "file" {
-    content     = "${data.template_file.mastodon_assets.rendered}"
-    destination = "/home/mastodon/precompile_assets.sh"
-  }
-  
-  provisioner "file" {
-    content     = "${data.template_file.mastodon_env.rendered}"
-    destination = "/home/mastodon/mastodon.env"
-  }
-  
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x /home/mastodon/precompile_assets.sh",
-      "/home/mastodon/precompile_assets.sh",
-      "rm /home/mastodon/precompile_assets.sh"
-    ]
-  }
-}
-
 resource "null_resource" "deploy_mastodon" {
-  depends_on = ["module.swarm-cluster", "null_resource.deploy_mastodon_assets"]
+  depends_on = ["module.swarm-cluster"]
   
   triggers = {
     mastodon_env_sha1  = "${sha1(file("${path.module}/templates/mastodon.env.tpl"))}"

@@ -110,8 +110,6 @@ services:
       - redis
     volumes:
       - public-system:/mastodon/public/system
-      - public-assets:/mastodon/public/assets
-      - public-packs:/mastodon/public/packs
     networks:
       - external-net
       - internal-net
@@ -179,8 +177,6 @@ services:
       - redis
     volumes:
       - public-system:/mastodon/public/system
-      - public-assets:/mastodon/public/assets
-      - public-packs:/mastodon/public/packs
     deploy:
       mode: replicated
       replicas: 1
@@ -206,16 +202,8 @@ networks:
     driver: overlay
     attachable: true
 
-# public-assets and public-packs are volumes created by the precompile_assets.sh provisioning script
-# bivac seems to be ignoring the labels, but the cron job task is configured to blacklist them too.
 volumes:
   acme-storage:
   postgres:
   public-system:
-  public-assets:
-    labels:
-      - io.bivac.ignore=true
-  public-packs:
-    labels:
-      - io.bivac.ignore=true
   redis:

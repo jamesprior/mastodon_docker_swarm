@@ -11,8 +11,6 @@ cat <<EOF > /root/bivac_backup.sh
   --engine=duplicity \\
   --remove-older-than=21D \\
   --full-if-older-than=7D \\
-  --blacklist=mastodon_public-assets \\
-  --blacklist=mastodon_public-packs \\
   --aws-access-key-id=${backup_aws_access_key_id} \\
   --aws-secret-key-id=${backup_aws_secret_access_key}
 EOF

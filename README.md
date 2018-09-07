@@ -26,8 +26,7 @@ https://github.com/thojkooi/terraform-digitalocean-docker-swarm-mode
 
 Fork this repo so you can make changes for your environment.
 
-The host computer will need a copy of `terraform` and `jq` installed.  
-On OS X `jq` can be installed via Homebrew.
+The host computer will need a copy of `terraform` and `jq` installed.  On OS X `jq` can be installed via Homebrew.
 
 Update `staging/backend.tf` and `production/backend.tf`.  They are currently configured to use 
 AWS's S3 and DynamoDB for remote state storage, but you could change this to use local storage if you'd like.
@@ -51,16 +50,16 @@ Digital Ocean.
 Here's a list of things you'll need to create once or configure outside of terraform before setting in
 a `secrets.auto.tfvars` or a `main.tf` file for an environment:
 
-[ ] Digital ocean API token with write access
-[ ] Digital ocean API token with read access for droplan
-[ ] An AWS profile for the terraform backend
-[ ] A public and private key for vapid to enable web push. (See the `generate_vapid_keys.rb` script)
-[ ] An SMTP username, password, port, and hostname
-[ ] A set of credentials, bucket and enpoint in an AWS S3 workalike for user assets
-[ ] A set of credentials, bucket and enpoint in an AWS S3 workalike for backups
-[ ] An SSH key in Digital Ocean
-[ ] A domain name registered and added as a domain to Digital Ocean
-[ ] A droplet image (see next section)
+- [ ] Digital ocean API token with write access
+- [ ] Digital ocean API token with read access for droplan
+- [ ] An AWS profile for the terraform backend
+- [ ] A public and private key for vapid to enable web push. (See the `generate_vapid_keys.rb` script)
+- [ ] An SMTP username, password, port, and hostname
+- [ ] A set of credentials, bucket and enpoint in an AWS S3 workalike for user assets
+- [ ] A set of credentials, bucket and enpoint in an AWS S3 workalike for backups
+- [ ] An SSH key in Digital Ocean
+- [ ] A domain name registered and added as a domain to Digital Ocean
+- [ ] A droplet image (see next section)
 
 
 # Droplet Images
@@ -135,8 +134,8 @@ a streaming container on the `manager-01` node.
 
 This terraform will store sensitive information in the tfstate.  You should not check this into source control.  
 If you do choose to store it, make sure that it is in a secure location.  If you are storing it in S3 that 
-means the bucket IS NOT PUBLIC, ideally encrypted at rest with access logs.  
-See https://tosbourn.com/hiding-secrets-terraform/ for more information.
+means the bucket IS NOT PUBLIC, ideally encrypted at rest with access logs.  See https://tosbourn.com/hiding-secrets-terraform/ 
+for more information.
 
 Access to the droplets is controlled by SSH keys and inbound SSH IP address filters.  Only the mastodon web 
 services are exposed externally.  Portainer is a powerful container management interface and it is not 
@@ -167,6 +166,8 @@ You can also ssh to a server and do it manually, use portainer, or force a redep
 terraform resource with `terraform taint -module=mastodon_swarm null_resource.deploy_mastodon` and 
 running `terraform apply`.
 
+If you just want to start over with all new machines you can remove them with `terraform destroy -target=module.mastodon_swarm.module.swarm-cluster`
+
 # Backups
 
 Backups of named docker volumes are scheduled to occur nightly.  This includes postgres, redis, traefik, 
@@ -174,3 +175,4 @@ and any user data that was uploaded locally insted of to remote object storage (
 Backups are kept for 21 days, full backups every 7 days.  Postgres is backed up as a full sql dump.  The 
 backup engine is Duplicity, and while it is possible to restore manually it's recommended to use the duplicity
 tool for restores.
+

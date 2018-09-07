@@ -31,7 +31,7 @@ module "mastodon_swarm" {
   swarm_manager_count = 3
   swarm_manager_size = "s-1vcpu-2gb"
   swarm_worker_count = 0
-  swarm_worker_size = "s-1vcpu-1gb"
+  swarm_worker_size = "s-1vcpu-2gb"
   manager_name = "manager-staging"
   worker_name = "worker-staging"
 }

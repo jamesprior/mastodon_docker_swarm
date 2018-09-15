@@ -11,9 +11,9 @@ module "mastodon_swarm" {
   backup_aws_secret_access_key = "${var.backup_aws_secret_access_key}"
   
   # Common configs for production and staging
-  allowed_ssh_ips = ["136.33.32.150"]
+  allowed_ssh_ips = "${var.allowed_ssh_ips}"
   domain_name = "kcmo.social"
-  ssh_key_ids = [ "23516" ]
+  ssh_key_ids = "${var.ssh_key_ids}"
   acme_email = "acme@kcmo.social"
   smtp_server = "email-smtp.us-east-1.amazonaws.com"
   smtp_port = "587"
@@ -27,7 +27,7 @@ module "mastodon_swarm" {
   traefik_debug = "true"
   s3_bucket = "kcmo-social-staging"
   s3_backup_bucket = "kcmo-social-staging-backups"
-  swarm_image = "37868963"
+  swarm_image = "${var.swarm_image}"
   swarm_manager_count = 3
   swarm_manager_size = "s-1vcpu-2gb"
   swarm_worker_count = 0

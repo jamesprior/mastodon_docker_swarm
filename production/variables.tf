@@ -8,7 +8,7 @@ variable "aws_profile" { }
 variable "aws_region" { default = "us-east-2" }
 
 # mastodon env secrets
-variable "do_droplan_token" {}
+variable "do_droplan_token" { }
 variable "vapid_public_key" { }
 variable "vapid_private_key" { }
 variable "smtp_login" { }
@@ -17,3 +17,6 @@ variable "aws_access_key_id" { }
 variable "aws_secret_access_key" { }
 variable "backup_aws_access_key_id" { }
 variable "backup_aws_secret_access_key" { }
+variable "allowed_ssh_ips" { type = "list" }
+variable "ssh_key_ids" { type = "list" }
+variable "swarm_image" { }

@@ -26,6 +26,17 @@ variable "backup_aws_access_key_id" {
 variable "backup_aws_secret_access_key" {
   description = "S3 and workalikes secret key for docker volume backups"
 }
+variable "allowed_ssh_ips" {
+  type        = "list"
+  description = "Your current IP or CIDR block, this will be used to lock down SSH access via DO firewall"
+}
+variable "ssh_key_ids" {
+  type        = "list"
+  description = "an array with ssh key IDs, these will be unique to your account.  See https://developers.digitalocean.com/documentation/v2/#list-all-keys"
+}
+variable "swarm_image" {
+  description = "You should build your own image. Use custom_image/setup.sh to build it.  See https://developers.digitalocean.com/documentation/v2/#list-a-user-s-images for how to fetch the image ID."
+}
 
 
 #
@@ -46,14 +57,6 @@ variable "subdomain" {
 variable "digitalocean_region" {
   default     = "nyc1"
   description = "Resources will be created in this region"
-}
-variable "allowed_ssh_ips" {
-  type        = "list"
-  description = "Your current IP or CIDR block, this will be used to lock down SSH access via DO firewall"
-}
-variable "ssh_key_ids" {
-  type        = "list"
-  description = "an array with ssh key IDs, these will be unique to your account.  See https://developers.digitalocean.com/documentation/v2/#list-all-keys"
 }
 variable "provision_ssh_key" {
   default     = "~/.ssh/id_rsa"
@@ -110,9 +113,6 @@ variable "s3_backup_bucket" {
 #
 # Swarm machine configs
 #
-variable "swarm_image" {
-  description = "You should build your own image. Use custom_image/setup.sh to build it.  See https://developers.digitalocean.com/documentation/v2/#list-a-user-s-images for how to fetch the image ID."
-}
 variable "swarm_manager_count" { 
   default     = 3 
   description = "The number of manager nodes to create in the docker swarm.  Manager nodes will be assigned work."

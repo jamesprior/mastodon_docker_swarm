@@ -111,6 +111,7 @@ resource "null_resource" "deploy_mastodon" {
   triggers = {
     mastodon_env_sha1  = "${sha1(file("${path.module}/templates/mastodon.env.tpl"))}"
     mastodon_yml_sha1  = "${sha1(file("${path.module}/templates/mastodon.yml.tpl"))}"
+    mastodon_version   = "${var.mastodon_image}"
   }
   
   connection {

@@ -20,7 +20,7 @@ module "mastodon_swarm" {
   smtp_from_address = "notifications@kcmo.social"
   
   # Staging specific configs
-  mastodon_image = "tootsuite/mastodon:v2.6.1"
+  mastodon_image = "tootsuite/mastodon:v2.6.5"
   project_name = "kcmo-social-staging"
   domain_name = "kcmo.social"
   subdomain = "staging"

@@ -9,7 +9,7 @@ module "mastodon_swarm" {
   aws_secret_access_key = "${var.aws_secret_access_key}"
   backup_aws_access_key_id = "${var.backup_aws_access_key_id}"
   backup_aws_secret_access_key = "${var.backup_aws_secret_access_key}"
- 
+
   # Common configs for production and staging
   allowed_ssh_ips = "${var.allowed_ssh_ips}"
   domain_name = "kcmo.social"
@@ -18,9 +18,9 @@ module "mastodon_swarm" {
   smtp_server = "email-smtp.us-east-1.amazonaws.com"
   smtp_port = "587"
   smtp_from_address = "notifications@kcmo.social"
-  
+
   # Production specific configs
-  mastodon_image = "tootsuite/mastodon:v2.6.1"
+  mastodon_image = "tootsuite/mastodon:v2.6.5"
   project_name = "kcmo-social-production"
   domain_name = "kcmo.social"
   traefik_debug = "false"

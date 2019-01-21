@@ -85,18 +85,18 @@ resource "null_resource" "deploy_portainer" {
   triggers = {
     portainer_yml_sha1 = "${sha1(file("${path.module}/provisioning/portainer.yml"))}"
   }
-  
+
   connection {
     host        = "${module.swarm-cluster.manager_ips[0]}"
     type        = "ssh"
     user        = "mastodon"
     private_key = "${file("${var.provision_ssh_key}")}"
   }
-  
+
   provisioner "file" {
     content     = "${file("${path.module}/provisioning/portainer.yml")}"
     destination = "/home/mastodon/portainer.yml"
-  }  
+  }
 
   provisioner "remote-exec" {
     inline = [
@@ -107,13 +107,13 @@ resource "null_resource" "deploy_portainer" {
 
 resource "null_resource" "deploy_mastodon" {
   depends_on = ["module.swarm-cluster"]
-  
+
   triggers = {
     mastodon_env_sha1  = "${sha1(file("${path.module}/templates/mastodon.env.tpl"))}"
     mastodon_yml_sha1  = "${sha1(file("${path.module}/templates/mastodon.yml.tpl"))}"
     mastodon_version   = "${var.mastodon_image}"
   }
-  
+
   connection {
     host        = "${module.swarm-cluster.manager_ips[0]}"
     type        = "ssh"
@@ -125,16 +125,16 @@ resource "null_resource" "deploy_mastodon" {
     content     = "${data.template_file.mastodon_yml.rendered}"
     destination = "/home/mastodon/mastodon.yml"
   }
-  
+
   provisioner "file" {
     content     = "${data.template_file.mastodon_env.rendered}"
     destination = "/home/mastodon/mastodon.env"
   }
-  
+
   provisioner "file" {
     content     = "${file("${path.module}/provisioning/portainer.yml")}"
     destination = "/home/mastodon/portainer.yml"
-  }  
+  }
 
   provisioner "remote-exec" {
     inline = [

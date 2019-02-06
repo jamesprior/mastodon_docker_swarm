@@ -76,6 +76,7 @@ data "template_file" "mastodon_env" {
     s3_region             = "${var.s3_region}"
     s3_protocol           = "https"
     s3_hostname           = "${var.s3_hostname}"
+    s3_alias_host         = "${var.s3_alias_host}"
   }
 }
 

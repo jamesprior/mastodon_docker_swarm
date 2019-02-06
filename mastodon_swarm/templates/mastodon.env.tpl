@@ -126,6 +126,7 @@ S3_REGION=${s3_region}
 S3_PROTOCOL=${s3_protocol}
 S3_HOSTNAME=${s3_hostname}
 S3_ENDPOINT=${s3_protocol}://${s3_hostname}
+S3_ALIAS_HOST=${s3_alias_host}
 
 
 # Swift (optional)

@@ -27,6 +27,7 @@ module "mastodon_swarm" {
   traefik_debug = "true"
   s3_bucket = "kcmo-social-staging"
   s3_backup_bucket = "kcmo-social-staging-backups"
+  s3_alias_host = "kcmo-social-staging.nyc3.cdn.digitaloceanspaces.com"
   swarm_image = "${var.swarm_image}"
   swarm_manager_count = 3
   swarm_manager_size = "s-1vcpu-2gb"

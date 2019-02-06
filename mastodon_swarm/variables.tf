@@ -1,14 +1,14 @@
-# These are secrets 
+# These are secrets
 variable "do_droplan_token" {
   description = "A digital ocean api token with read only access for setting up droplan"
 }
-variable "vapid_public_key" { 
+variable "vapid_public_key" {
   description = "The public key used for web push notifications.  Check the mastodon docs for more info."
 }
-variable "vapid_private_key" { 
+variable "vapid_private_key" {
   description = "The private key used for web push notifications.  Check the mastodon docs for more info."
 }
-variable "smtp_login" { 
+variable "smtp_login" {
   description = "Username used to log into the SMTP server"
 }
 variable "smtp_password" {
@@ -72,7 +72,7 @@ variable "mastodon_image" {
 variable "acme_email" {
   description = "The email address submitted to lets encrypt with acme challenges"
 }
-# 
+#
 variable "traefik_debug" {
   default     = "true"
   description = "Set this to false to use the production lets encrypt ca server and turn off debugging in traefik"
@@ -96,11 +96,15 @@ variable "smtp_from_address" {
 variable "s3_bucket" {
   description = "Used for user uploaded assets.  It must be publicly available and configured with CORS."
 }
-variable "s3_region" { 
-  default = "nyc3" 
+variable "s3_region" {
+  default = "nyc3"
 }
 variable "s3_protocol" { default = "https" }
 variable "s3_hostname" { default = "nyc3.digitaloceanspaces.com" }
+variable "s3_alias_host" {
+  description = "The CDN edge endpoint for the space, passed to paperclip as s3_host_alias"
+  default = "nyc3.digitaloceanspaces.com"
+}
 
 #
 # backup configs
@@ -113,15 +117,15 @@ variable "s3_backup_bucket" {
 #
 # Swarm machine configs
 #
-variable "swarm_manager_count" { 
-  default     = 3 
+variable "swarm_manager_count" {
+  default     = 3
   description = "The number of manager nodes to create in the docker swarm.  Manager nodes will be assigned work."
-} 
+}
 variable "swarm_manager_size" {
   default = "s-1vcpu-2gb"
   description = "The droplet size of the manager nodes, use the id or the slug.  To fetch a list see https://developers.digitalocean.com/documentation/v2/#list-all-sizes"
 }
-variable "swarm_worker_count" { 
+variable "swarm_worker_count" {
   default     = 0
   description = "The number of worker nodes to create in the docker swarm."
 }

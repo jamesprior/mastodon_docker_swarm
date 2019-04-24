@@ -17,7 +17,7 @@ sudo apt install -yy docker-ce
 ########################################################################
 # UFW setup
 ########################################################################
-ufw allow 22/tcp 
+ufw allow 22/tcp
 ufw allow 2376/tcp
 ufw allow 2377/tcp
 ufw allow 7946/tcp
@@ -45,8 +45,9 @@ chmod  750 /home/mastodon
 
 ########################################################################
 # Digital ocean specific setup - monitoring and droplan
+# Beware this includes an NYC3 CDN, if you're in another region you may want to change it
 ########################################################################
-curl -sSL https://agent.digitalocean.com/install.sh | sh
+curl -sSL https://insights.nyc3.cdn.digitaloceanspaces.com/install.sh | sudo bash
 apt-get install -yy netfilter-persistent
 mkdir -p /opt/droplan
 curl -O -L https://github.com/tam7t/droplan/releases/download/v1.3.1/droplan_1.3.1_linux_amd64.tar.gz

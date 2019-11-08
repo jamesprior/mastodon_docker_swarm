@@ -29,9 +29,9 @@ services:
     networks:
       - internal-net
     command: [
-      "redis-server", 
-      "--appendonly", "yes", 
-      "--bind", "0.0.0.0", 
+      "redis-server",
+      "--appendonly", "yes",
+      "--bind", "0.0.0.0",
       "--requirepass", "${redis_pw}"]
     deploy:
       mode: replicated
@@ -49,9 +49,13 @@ services:
   traefik:
     image: traefik:1.6-alpine
     ports:
-      - "80:80"  
-      - "443:443"  
       - "8080:8080" # admin port
+      - target: 80
+        published: 80
+        mode: host
+      - target: 443
+        published: 443
+        mode: host
     volumes:
       # traefik needs the docker socket in order to work properly
       - /var/run/docker.sock:/var/run/docker.sock
@@ -59,12 +63,12 @@ services:
       # http://docs.traefik.io/user-guide/examples/
       - /dev/null:/traefik.toml
       # use a named-volume for certs persistency
-      - acme-storage:/etc/traefik/acme 
+      - acme-storage:/etc/traefik/acme
     networks:
       - external-net
       - internal-net
     command: [
-        "traefik", 
+        "traefik",
         "--acme",
         "--acme.acmelogging=true",
         "--acme.caserver=${acme_caserver}",
@@ -81,9 +85,9 @@ services:
         "--entryPoints=Name:http Address::80 Redirect.EntryPoint:https",
         "--entryPoints=Name:https Address::443 TLS",
         "--sendAnonymousUsage=${traefik_send_anonymous_usage}",
-        "--docker", 
-        "--docker.swarmMode", 
-        "--docker.watch", 
+        "--docker",
+        "--docker.swarmMode",
+        "--docker.watch",
         "--docker.domain=${swarm_hostname}",
         "--retry"]
     deploy:

@@ -99,7 +99,7 @@ To run rake commands ssh to manager-01 and invoke the command with:
     --net mastodon_internal-net \
     --env-file mastodon.env \
     -e RAILS_ENV=production \
-    tootsuite/mastodon:v2.9.2 \
+    tootsuite/mastodon:v3.1.2 \
     COMMAND_TO_RUN_HERE
 
 For example, to make alice an admin ( See https://github.com/tootsuite/documentation/blob/master/Running-Mastodon/Administration-guide.md for more info)
@@ -109,7 +109,7 @@ For example, to make alice an admin ( See https://github.com/tootsuite/documenta
     --env-file mastodon.env \
     -e RAILS_ENV=production \
     -e USERNAME=alice \
-    tootsuite/mastodon:v2.9.2 \
+    tootsuite/mastodon:v3.1.2 \
     rails mastodon:make_admin
 
 You can also use the portainer interface to open a console on one of the containers running
@@ -153,7 +153,7 @@ When the terraform apply is complete you will need to set up the database.  SSH 
     --env-file mastodon.env \
     -e RAILS_ENV=production \
     -e SAFETY_ASSURED=1 \
-    tootsuite/mastodon:v2.9.2 \
+    tootsuite/mastodon:v3.1.2 \
     rails db:setup
 
 
@@ -192,7 +192,7 @@ If the upgrade notes require it run the DB migrations with:
     --env-file mastodon.env \
     -e RAILS_ENV=production \
     -e SKIP_POST_DEPLOYMENT_MIGRATIONS=true \
-    tootsuite/mastodon:v2.9.2 \
+    tootsuite/mastodon:v3.1.2 \
     rails db:migrate
 
 Once the migration is complete you can use terraform to deploy the changes, eg `terraform apply`.  After it's been applied run the post deployment migrations with
@@ -201,6 +201,6 @@ Once the migration is complete you can use terraform to deploy the changes, eg `
     --net mastodon_internal-net \
     --env-file mastodon.env \
     -e RAILS_ENV=production \
-    tootsuite/mastodon:v2.9.2 \
+    tootsuite/mastodon:v3.1.2 \
     rails db:migrate
 

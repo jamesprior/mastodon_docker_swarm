@@ -17,6 +17,7 @@ locals {
   traefik_debug_flag    = "${(var.traefik_debug == "true" ? "--debug" : "")}"
   # Traefik goes on the second manager if there are more than one, otherwise it goes on the first manager
   traefik_node_name     = "${(var.swarm_manager_count > 1 ? "${var.manager_name}-02" : "${var.manager_name}-01")}"
+  traefik_node_ip       = "${(var.swarm_manager_count > 1 ? "${module.swarm-cluster.manager_ips[1]}" : "${module.swarm-cluster.manager_ips[0]}")}"
 }
 
 

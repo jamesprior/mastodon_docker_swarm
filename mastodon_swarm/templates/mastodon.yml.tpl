@@ -47,7 +47,7 @@ services:
         constraints:
           - node.labels.redis == true
   traefik:
-    image: traefik:1.6-alpine
+    image: traefik:1.7-alpine
     ports:
       - "8080:8080" # admin port
       - target: 80

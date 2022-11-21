@@ -172,7 +172,7 @@ services:
   sidekiq:
     image: ${mastodon_image}
     env_file: mastodon.env
-    command: bundle exec sidekiq -q default -q mailers -q pull -q push
+    command: bundle exec sidekiq -q default -q mailers -q pull -q push -q scheduler
     networks:
       - internal-net
       - external-net

@@ -2,146 +2,196 @@
 # See MIT license below
 
 locals {
-  cluster_tags = ["${digitalocean_tag.manager.id}", "${digitalocean_tag.worker.id}"]
+  cluster_tags = [digitalocean_tag.manager.id, digitalocean_tag.worker.id]
 }
 
 resource "digitalocean_firewall" "swarm-internal-fw" {
-  name        = "${var.project_name}-swarm-internal-fw"
-  tags        = ["${digitalocean_tag.project_name.id}"]
+  name = "${var.project_name}-swarm-internal-fw"
+  tags = [digitalocean_tag.project_name.id]
 
-  outbound_rule = [
-    {
-      protocol                = "tcp"
-      port_range              = "2377"
-      destination_tags        = ["${local.cluster_tags}"]
-    },
-    {
-      # for container network discovery
-      protocol                = "tcp"
-      port_range              = "7946"
-      destination_tags        = ["${local.cluster_tags}"]
-    },
-    {
-      # UDP for the container overlay network.
-      protocol                = "udp"
-      port_range              = "4789"
-      destination_tags        = ["${local.cluster_tags}"]
-    },
-    {
-      # for container network discovery.
-      protocol                = "udp"
-      port_range              = "7946"
-      destination_tags        = ["${local.cluster_tags}"]
-    },
-  ]
+  outbound_rule {
+    protocol   = "tcp"
+    port_range = "2377"
+    # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+    # force an interpolation expression to be interpreted as a list by wrapping it
+    # in an extra set of list brackets. That form was supported for compatibilty in
+    # v0.11, but is no longer supported in Terraform v0.12.
+    #
+    # If the expression in the following list itself returns a list, remove the
+    # brackets to avoid interpretation as a list of lists. If the expression
+    # returns a single list item then leave it as-is and remove this TODO comment.
+    destination_tags = local.cluster_tags
+  }
+  outbound_rule {
+    # for container network discovery
+    protocol   = "tcp"
+    port_range = "7946"
+    # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+    # force an interpolation expression to be interpreted as a list by wrapping it
+    # in an extra set of list brackets. That form was supported for compatibilty in
+    # v0.11, but is no longer supported in Terraform v0.12.
+    #
+    # If the expression in the following list itself returns a list, remove the
+    # brackets to avoid interpretation as a list of lists. If the expression
+    # returns a single list item then leave it as-is and remove this TODO comment.
+    destination_tags = local.cluster_tags
+  }
+  outbound_rule {
+    # UDP for the container overlay network.
+    protocol   = "udp"
+    port_range = "4789"
+    # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+    # force an interpolation expression to be interpreted as a list by wrapping it
+    # in an extra set of list brackets. That form was supported for compatibilty in
+    # v0.11, but is no longer supported in Terraform v0.12.
+    #
+    # If the expression in the following list itself returns a list, remove the
+    # brackets to avoid interpretation as a list of lists. If the expression
+    # returns a single list item then leave it as-is and remove this TODO comment.
+    destination_tags = local.cluster_tags
+  }
+  outbound_rule {
+    # for container network discovery.
+    protocol   = "udp"
+    port_range = "7946"
+    # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+    # force an interpolation expression to be interpreted as a list by wrapping it
+    # in an extra set of list brackets. That form was supported for compatibilty in
+    # v0.11, but is no longer supported in Terraform v0.12.
+    #
+    # If the expression in the following list itself returns a list, remove the
+    # brackets to avoid interpretation as a list of lists. If the expression
+    # returns a single list item then leave it as-is and remove this TODO comment.
+    destination_tags = local.cluster_tags
+  }
 
-  inbound_rule = [
-    {
-      protocol           = "tcp"
-      port_range         = "2377"
-      source_tags        = ["${local.cluster_tags}"]
-    },
-    {
-      # for container network discovery
-      protocol           = "tcp"
-      port_range         = "7946"
-      source_tags        = ["${local.cluster_tags}"]
-    },
-    {
-      # UDP for the container overlay network.
-      protocol           = "udp"
-      port_range         = "4789"
-      source_tags        = ["${local.cluster_tags}"]
-    },
-    {
-      # for container network discovery.
-      protocol           = "udp"
-      port_range         = "7946"
-      source_tags        = ["${local.cluster_tags}"]
-    },
-  ]
+  inbound_rule {
+    protocol   = "tcp"
+    port_range = "2377"
+    # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+    # force an interpolation expression to be interpreted as a list by wrapping it
+    # in an extra set of list brackets. That form was supported for compatibilty in
+    # v0.11, but is no longer supported in Terraform v0.12.
+    #
+    # If the expression in the following list itself returns a list, remove the
+    # brackets to avoid interpretation as a list of lists. If the expression
+    # returns a single list item then leave it as-is and remove this TODO comment.
+    source_tags = local.cluster_tags
+  }
+  inbound_rule {
+    # for container network discovery
+    protocol   = "tcp"
+    port_range = "7946"
+    # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+    # force an interpolation expression to be interpreted as a list by wrapping it
+    # in an extra set of list brackets. That form was supported for compatibilty in
+    # v0.11, but is no longer supported in Terraform v0.12.
+    #
+    # If the expression in the following list itself returns a list, remove the
+    # brackets to avoid interpretation as a list of lists. If the expression
+    # returns a single list item then leave it as-is and remove this TODO comment.
+    source_tags = local.cluster_tags
+  }
+  inbound_rule {
+    # UDP for the container overlay network.
+    protocol   = "udp"
+    port_range = "4789"
+    # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+    # force an interpolation expression to be interpreted as a list by wrapping it
+    # in an extra set of list brackets. That form was supported for compatibilty in
+    # v0.11, but is no longer supported in Terraform v0.12.
+    #
+    # If the expression in the following list itself returns a list, remove the
+    # brackets to avoid interpretation as a list of lists. If the expression
+    # returns a single list item then leave it as-is and remove this TODO comment.
+    source_tags = local.cluster_tags
+  }
+  inbound_rule {
+    # for container network discovery.
+    protocol   = "udp"
+    port_range = "7946"
+    # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+    # force an interpolation expression to be interpreted as a list by wrapping it
+    # in an extra set of list brackets. That form was supported for compatibilty in
+    # v0.11, but is no longer supported in Terraform v0.12.
+    #
+    # If the expression in the following list itself returns a list, remove the
+    # brackets to avoid interpretation as a list of lists. If the expression
+    # returns a single list item then leave it as-is and remove this TODO comment.
+    source_tags = local.cluster_tags
+  }
 }
 
 # remember there is a 50 rule limit
 resource "digitalocean_firewall" "swarm-external-fw" {
-  name        = "${var.project_name}-swarm-external-fw"
-  tags        = ["${digitalocean_tag.project_name.id}"]
+  name = "${var.project_name}-swarm-external-fw"
+  tags = [digitalocean_tag.project_name.id]
 
-  outbound_rule = [
+  outbound_rule {
     # http/https connections
-    {
-      protocol                       = "tcp"
-      port_range                     = "80"
-      destination_addresses          = ["0.0.0.0/0", "::/0"]
-    },
-    {
-      protocol                       = "tcp"
-      port_range                     = "443"
-      destination_addresses          = ["0.0.0.0/0", "::/0"]
-    },
+    protocol              = "tcp"
+    port_range            = "80"
+    destination_addresses = ["0.0.0.0/0", "::/0"]
+  }
+  outbound_rule {
+    protocol              = "tcp"
+    port_range            = "443"
+    destination_addresses = ["0.0.0.0/0", "::/0"]
+  }
+  outbound_rule {
     # DNS lookups
-    {
-      protocol                       = "udp"
-      port_range                     = "53"
-      destination_addresses          = ["0.0.0.0/0", "::/0"]
-    },
-    {
-      protocol                       = "tcp"
-      port_range                     = "53"
-      destination_addresses          = ["0.0.0.0/0", "::/0"]
-    },
+    protocol              = "udp"
+    port_range            = "53"
+    destination_addresses = ["0.0.0.0/0", "::/0"]
+  }
+  outbound_rule {
+    protocol              = "tcp"
+    port_range            = "53"
+    destination_addresses = ["0.0.0.0/0", "::/0"]
+  }
+  outbound_rule {
     # NTP
-    {
-      protocol                = "udp"
-      port_range              = "123"
-      destination_addresses   = ["0.0.0.0/0", "::/0"]
-    },
+    protocol              = "udp"
+    port_range            = "123"
+    destination_addresses = ["0.0.0.0/0", "::/0"]
+  }
+  outbound_rule {
     # SMTP
-    {
-      protocol                = "tcp"
-      port_range              = "${var.smtp_port}"
-      destination_addresses   = ["0.0.0.0/0", "::/0"]
-    },
-  ]
-  
-  inbound_rule = [
+    protocol              = "tcp"
+    port_range            = var.smtp_port
+    destination_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
+  inbound_rule {
     # http/https connections
-    {
-      protocol                       = "tcp"
-      port_range                     = "80"
-      source_addresses               = ["0.0.0.0/0", "::/0"]
-    },
-    {
-      protocol                       = "tcp"
-      port_range                     = "443"
-      source_addresses               = ["0.0.0.0/0", "::/0"]
-    },
-  ]
+    protocol         = "tcp"
+    port_range       = "80"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "443"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
 }
 
 resource "digitalocean_firewall" "swarm-ssh-fw" {
-  name        = "${var.project_name}-swarm-ssh-fw"
-  tags        = ["${digitalocean_tag.project_name.id}"]
+  name = "${var.project_name}-swarm-ssh-fw"
+  tags = [digitalocean_tag.project_name.id]
 
   # git/ssh connection
-  outbound_rule = [
-    {
-      protocol                = "tcp"
-      port_range              = "22"
-      destination_addresses   = ["${var.allowed_ssh_ips}"]
-    },
-  ]
+  outbound_rule {
+    protocol              = "tcp"
+    port_range            = "22"
+    destination_addresses = var.allowed_ssh_ips
+  }
 
-  inbound_rule = [
-    {
-      protocol           = "tcp"
-      port_range         = "22"
-      source_addresses   = ["${var.allowed_ssh_ips}"]
-    },
-  ]
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "22"
+    source_addresses = var.allowed_ssh_ips
+  }
 }
-
-
 
 /*MIT License
 

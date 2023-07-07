@@ -109,6 +109,9 @@ services:
     command: bash -c "rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000 -b '0.0.0.0'"
     ports:
       - "3000"
+    healthcheck:
+      # prettier-ignore
+      test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:3000/health || exit 1']
     depends_on:
       - db
       - redis
@@ -140,9 +143,12 @@ services:
   streaming:
     image: ${mastodon_image}
     env_file: mastodon.env
-    command: yarn start
+    command: node ./streaming
     ports:
       - "4000"
+    healthcheck:
+      # prettier-ignore
+      test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:4000/api/v1/streaming/health || exit 1']
     depends_on:
       - db
       - redis
@@ -172,7 +178,9 @@ services:
   sidekiq:
     image: ${mastodon_image}
     env_file: mastodon.env
-    command: bundle exec sidekiq -q default -q mailers -q pull -q push -q scheduler
+    command: bundle exec sidekiq
+    healthcheck:
+      test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
     networks:
       - internal-net
       - external-net

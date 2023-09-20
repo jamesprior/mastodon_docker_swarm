@@ -21,7 +21,7 @@ module "mastodon_swarm" {
   smtp_from_address = "notifications@kcmo.social"
 
   # Production specific configs
-  mastodon_image      = "tootsuite/mastodon:v4.1.3"
+  mastodon_image      = "tootsuite/mastodon:v4.1.8"
   project_name        = "kcmo-social-production"
   domain_name         = "kcmo.social"
   traefik_debug       = "false"
